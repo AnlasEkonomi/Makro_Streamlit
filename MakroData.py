@@ -1,9 +1,16 @@
 import streamlit as st
 import evds as ev
 import pandas as pd
-from datetime import datetime
+from datetime import datetime,timedelta
 import plotly.graph_objects as go
 from urllib.error import HTTPError
+import requests
+from bs4 import BeautifulSoup
+import plotly.express as px
+from io import StringIO
+from yahooquery import Ticker
+from lxml import etree
+import cloudscraper
 
 
 evdsapi=ev.evdsAPI("Your Api Key")
@@ -91,6 +98,25 @@ def tlref():
     veri.dropna(axis=0,inplace=True)
     veri.columns=["Tarih","TLREF"]
     return veri
+
+def mevfaiz():
+    start="04-01-2002"
+    end=datetime.today().strftime("%d-%m-%Y")
+    veri=evdsapi.get_data(["TP.TRY.MT01","TP.TRY.MT02","TP.TRY.MT03",
+                           "TP.TRY.MT04","TP.TRY.MT05"],startdate=start,enddate=end)
+    veri.drop(columns=["YEARWEEK"],inplace=True)
+    veri.columns=["Tarih","1 Aya Kadar","3 Aya Kadar","6 Aya Kadar","1 Yıla Kadar","1 Yıl ve Üzeri"]
+    return veri
+
+def kredifaiz():
+    start="04-01-2002"
+    end=datetime.today().strftime("%d-%m-%Y")
+    veri=evdsapi.get_data(["TP.KTF10","TP.KTF11","TP.KTF12","TP.KTF17",
+                           "TP.KTFTUK"],startdate=start,enddate=end)
+    veri.drop(columns=["YEARWEEK"],inplace=True)
+    veri.columns=["Tarih","İhtiyaç","Taşıt","Konut","Ticari","Tüketici (İhtiyaç+Taşıt+Konut)"]
+    return veri
+
 
 def hissead():
     hisseler=[]
@@ -219,6 +245,89 @@ def hissefiyat(hisse,ilk,son):
         veri2=pd.DataFrame(columns=veri.columns)
         return veri2
 
+def bisttreemap():
+    url="https://www.isyatirim.com.tr/tr-tr/analiz/hisse/Sayfalar/Temel-Degerler-Ve-Oranlar.aspx#page-1"
+    r=requests.get(url).text
+    tablo=pd.read_html(StringIO(r))[2]
+    sektor=pd.DataFrame({"Hisse": tablo["Kod"], "Sektör": tablo["Sektör"], "Piyasa Değeri (mn $)": tablo["Piyasa Değeri (mn $)"]})
+    tablo2=pd.read_html(StringIO(r))[7]
+    getiri=pd.DataFrame({"Hisse": tablo2["Kod"], "Getiri (%)": tablo2["Günlük Getiri (%)"]/100})
+
+    df=pd.merge(sektor,getiri,on="Hisse")
+    df["Piyasa Değeri (mn $)"]=df["Piyasa Değeri (mn $)"].str.replace('.', '').str.replace(',', '.').astype("float64")
+
+    renk_aralik=[-10,-5,-0.01,0,0.01,5,10]
+    df["Renk"]=pd.cut(df["Getiri (%)"],bins=renk_aralik,labels=["red","indianred","lightpink","lightgreen","lime","green"])
+
+    fig=px.treemap(df,path=[px.Constant("Borsa İstanbul"),"Sektör","Hisse"],values="Piyasa Değeri (mn $)",
+                    color="Renk",custom_data=["Getiri (%)","Sektör"],
+                    color_discrete_map={"(?)":"#262931","red":"red","indianred":"indianred", 
+                                        "lightpink":"lightpink","lightgreen":"lightgreen","lime":"lime","green":"green"})
+    fig.update_layout(width=2000,height=1600)
+    fig.update_traces(
+        hovertemplate="<br>".join([
+            "Hisse: %{label}",
+            "Piyasa Değeri (mn $): %{value}",
+            "Getiri: %{customdata[0]}",
+            "Sektör: %{customdata[1]}"]))
+    fig.data[0].texttemplate="<b>%{label}</b><br>%{customdata[0]} %"
+    st.plotly_chart(fig)
+
+def hedef_fiyat_yahoo():
+    def hisseler():
+        url="https://www.isyatirim.com.tr/tr-tr/analiz/hisse/Sayfalar/Temel-Degerler-Ve-Oranlar.aspx?endeks=01#page-1"
+        html_text=requests.get(url).text
+        html_io=StringIO(html_text)
+        tablo=pd.read_html(html_io)[2]["Kod"]
+        for i in range(len(tablo)):
+            tablo[i] += ".IS"
+        hissekod=tablo.to_list()
+        return hissekod
+    hisse=Ticker(hisseler())
+    hisse_dict=hisse.financial_data
+    veri=pd.DataFrame.from_dict(hisse_dict,orient="index").iloc[:,1:6].reset_index()
+    veri.columns=["Hisse Adı","Güncel Fiyat","En Yüksek Tahmin","En Düşük Tahmin",
+            "Ortalama Tahmin","Medyan Tahmin"]
+    veri["Hisse Adı"]=veri["Hisse Adı"].str.replace(".IS","",regex=False)
+    veri.dropna(axis=0,inplace=True)
+    veri.reset_index(drop=True,inplace=True)
+    return veri
+
+def cnbcpro():
+    url=st.text_input("**Lütfen URL Giriniz:**") 
+    if url:
+        try:
+            res=requests.get(url)
+            soup=BeautifulSoup(res.text,"html.parser")
+            doc=etree.HTML(str(soup))
+            doc2=doc.xpath("//*[@id='RegularArticle-ArticleBody-5']/span[1]/span/span")
+
+            st.write(doc2[0].text)
+        except Exception as e:
+             st.error("**Hatalı URL. Lütfen tekrar giriniz...**")
+
+def cds():
+    scraper=cloudscraper.CloudScraper()
+    url="https://en.macromicro.me/charts/data/68256"
+
+    headers={
+        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Authorization": "Bearer 8096cd3a67d6b9d10e0785239a58390a",
+        "Cookie": "PHPSESSID=r2f4losopnom9dt5kjq486boss; _gid=GA1.2.1302961084.1726567296; _fbp=fb.1.1726567296378.35347350480971742; aiExplainOn=off; _hjSession_1543609=eyJpZCI6ImMzYzk3NDRmLTJiOGYtNGQ5NC04ODFlLTIzNDU2MDUwYTM0ZSIsImMiOjE3MjY1NjcyOTcwOTEsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjoxLCJzcCI6MX0=; __lt__cid=147f0834-02cb-4b05-bd97-a9c12ba4c803; __lt__sid=d30c02d1-c4f0aeef; reminder=1726567309; _hjSessionUser_1543609=eyJpZCI6IjE4NzgzZjIxLWE2ODItNTA3Yi04MjVjLWJiYzcxZjg2ZGJjOSIsImNyZWF0ZWQiOjE3MjY1NjcyOTcwOTAsImV4aXN0aW5nIjp0cnVlfQ==; prime7dfomc=1726567532; app_ui_support_btn=5; mm_sess_pages=5; _ga_4CS94JJY2M=GS1.1.1726567296.1.1.1726568202.0.0.0; cf_clearance=DKVck3.Q2OFHp1_Mh6juT.SKiYpRuJbbit9SR1xlWu0-1726568202-1.2.1.1-LL6qtwtUyCeqsVSsz8b6U4m9.n0nFLATCrrSA8Q.a8SRPYmpfx6asGt_ZbbvmSuzDehCJ0x3HdABmz3IAqa1xOKzIvA0Swmn1xF.fuTYHiCtwSx6Qr2.GrtD3mQrPQjnozc7_GlnpHdjl33huAOgVpAjo9z2_Vc3qKNsf4B5qWQB8n.Q2fxku6haJey0BsJMiauDYrPL_zwqa8ylFpWjvjkRwIiFLCKc7Ivb.oGrKJMqMl6e5KLqv89u7BtC3chKqVG_zrTfR7muhL.qBPp_WOTbN3FQ0tD_afaKFrY7GGQeKjyCMzc1aTEW5KGuWJ6iY7DAWfG9j1TM.cNUfKabKqzXn9qvg8CIOmYUtocfUIF3y5OpFsH2iHtadIn9btCG9vWm37Bah.4zd0e0P4oWjw; _ga=GA1.2.1196831987.1726567296; _gat_gtag_UA_66285376_3=1",
+        "Referer": "https://en.macromicro.me/charts/68256/turkey-5year-cds",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+        "X-Requested-With": "XMLHttpRequest"}
+
+    response=scraper.get(url,headers=headers)
+    veri=response.json()["data"]["c:68256"]["series"]
+    veri=pd.DataFrame(veri[0],columns=["Tarih","CDS"])
+    veri["Tarih"]=pd.to_datetime(veri["Tarih"])
+    veri["Tarih"]=veri["Tarih"].dt.strftime('%d-%m-%Y')
+    return veri
+
+
 ##------------------------------------------------------------------------------------
 
 st.markdown("""
@@ -252,6 +361,10 @@ button2=st.sidebar.button("MB Faizler")
 button3=st.sidebar.button("MB Kur Değerleri")
 button4=st.sidebar.button("Bilançolar")
 button5=st.sidebar.button("Geçmiş Fiyat")
+button6=st.sidebar.button("Bist Tree Map")
+button7=st.sidebar.button("Bist YF Hedef Fiyat")
+button8=st.sidebar.button("CNBC Pro Makaleler")
+button9=st.sidebar.button("CDS")
 
 if button1:
     st.session_state["button1_clicked"]=True
@@ -259,6 +372,10 @@ if button1:
     st.session_state["button3_clicked"]=False
     st.session_state["button4_clicked"]=False
     st.session_state["button5_clicked"]=False
+    st.session_state["button6_clicked"]=False
+    st.session_state["button7_clicked"]=False
+    st.session_state["button8_clicked"]=False
+    st.session_state["button9_clicked"]=False
 
 if button2:
     st.session_state["button1_clicked"]=False
@@ -266,6 +383,10 @@ if button2:
     st.session_state["button3_clicked"]=False
     st.session_state["button4_clicked"]=False
     st.session_state["button5_clicked"]=False
+    st.session_state["button6_clicked"]=False
+    st.session_state["button7_clicked"]=False
+    st.session_state["button8_clicked"]=False
+    st.session_state["button9_clicked"]=False
 
 if button3:
     st.session_state["button1_clicked"]=False
@@ -273,6 +394,10 @@ if button3:
     st.session_state["button3_clicked"]=True
     st.session_state["button4_clicked"]=False
     st.session_state["button5_clicked"]=False
+    st.session_state["button6_clicked"]=False
+    st.session_state["button7_clicked"]=False
+    st.session_state["button8_clicked"]=False
+    st.session_state["button9_clicked"]=False
 
 if button4:
     st.session_state["button1_clicked"]=False
@@ -280,6 +405,10 @@ if button4:
     st.session_state["button3_clicked"]=False
     st.session_state["button4_clicked"]=True
     st.session_state["button5_clicked"]=False
+    st.session_state["button6_clicked"]=False
+    st.session_state["button7_clicked"]=False
+    st.session_state["button8_clicked"]=False
+    st.session_state["button9_clicked"]=False
 
 if button5:
     st.session_state["button1_clicked"]=False
@@ -287,7 +416,54 @@ if button5:
     st.session_state["button3_clicked"]=False
     st.session_state["button4_clicked"]=False
     st.session_state["button5_clicked"]=True
+    st.session_state["button6_clicked"]=False
+    st.session_state["button7_clicked"]=False
+    st.session_state["button8_clicked"]=False
+    st.session_state["button9_clicked"]=False
 
+if button6:
+    st.session_state["button1_clicked"]=False
+    st.session_state["button2_clicked"]=False
+    st.session_state["button3_clicked"]=False
+    st.session_state["button4_clicked"]=False
+    st.session_state["button5_clicked"]=False
+    st.session_state["button6_clicked"]=True
+    st.session_state["button7_clicked"]=False
+    st.session_state["button8_clicked"]=False
+    st.session_state["button9_clicked"]=False
+
+if button7:
+    st.session_state["button1_clicked"]=False
+    st.session_state["button2_clicked"]=False
+    st.session_state["button3_clicked"]=False
+    st.session_state["button4_clicked"]=False
+    st.session_state["button5_clicked"]=False
+    st.session_state["button6_clicked"]=False
+    st.session_state["button7_clicked"]=True
+    st.session_state["button8_clicked"]=False
+    st.session_state["button9_clicked"]=False
+
+if button8:
+    st.session_state["button1_clicked"]=False
+    st.session_state["button2_clicked"]=False
+    st.session_state["button3_clicked"]=False
+    st.session_state["button4_clicked"]=False
+    st.session_state["button5_clicked"]=False
+    st.session_state["button6_clicked"]=False
+    st.session_state["button7_clicked"]=False
+    st.session_state["button8_clicked"]=True
+    st.session_state["button9_clicked"]=False
+
+if button9:
+    st.session_state["button1_clicked"]=False
+    st.session_state["button2_clicked"]=False
+    st.session_state["button3_clicked"]=False
+    st.session_state["button4_clicked"]=False
+    st.session_state["button5_clicked"]=False
+    st.session_state["button6_clicked"]=False
+    st.session_state["button7_clicked"]=False
+    st.session_state["button8_clicked"]=False
+    st.session_state["button9_clicked"]=True
 
 ##-----------------------------------------------------------------------------
 
@@ -329,7 +505,7 @@ if st.session_state.get("button1_clicked",False):
 ##--------------------------------------------------------------------------
 
 if st.session_state.get("button2_clicked",False):
-    secenek=["O/N","GLP","1 Haftalık Repo","TLREF"]
+    secenek=["O/N","GLP","1 Haftalık Repo","TLREF","Mevduat Faizleri (TL)","Kredi Faizleri (TL)"]
     st.markdown('<p style="font-weight:bold; color:black;">Faiz Türünü Seçin:</p>',unsafe_allow_html=True)
     faiz_secim=st.radio("",secenek,index=None,horizontal=True)
     
@@ -426,6 +602,55 @@ if st.session_state.get("button2_clicked",False):
         xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M1"))
         fig.update_xaxes(tickangle=-45)
         st.plotly_chart(fig)
+    
+    elif faiz_secim=="Mevduat Faizleri (TL)":
+        st.markdown('<p style="font-weight:bold; color:black;">Mevduat Faizleri (%)</p>',unsafe_allow_html=True)
+        st.dataframe(mevfaiz(),hide_index=True,width=1000)
+
+        fig=go.Figure()
+        columns=["1 Aya Kadar","3 Aya Kadar","6 Aya Kadar","1 Yıla Kadar","1 Yıl ve Üzeri"]
+        renkler=["Red","Blue","Green","Orange","Purple"]
+
+        for col,color in zip(columns,renkler):
+            fig.add_trace(go.Scatter(
+                x=pd.to_datetime(mevfaiz()["Tarih"],format="%d-%m-%Y"),
+                y=mevfaiz()[col],
+                mode="lines",
+                name=col,
+                line=dict(color=color)))
+
+        fig.update_layout(
+            title={"text": "Mevduat Faizleri (%)", "x": 0.5, "xanchor": "center"},
+            xaxis_title="Tarih",
+            yaxis_title="Faiz",
+            xaxis=dict(tickformat="%d-%m-%Y", tickmode="linear", dtick="M3"))
+        fig.update_xaxes(tickangle=-45)
+        st.plotly_chart(fig)
+    
+    elif faiz_secim=="Kredi Faizleri (TL)":
+        st.markdown('<p style="font-weight:bold; color:black;">Kredi Faizleri (%)</p>',unsafe_allow_html=True)
+        st.dataframe(kredifaiz(),hide_index=True,width=1000)
+
+        fig=go.Figure()
+        columns=["İhtiyaç","Taşıt","Konut","Ticari",
+                  "Tüketici (İhtiyaç+Taşıt+Konut)"]
+        renkler=["Red","Blue","Green","Orange","Purple","Black"]
+
+        for col,color in zip(columns,renkler):
+            fig.add_trace(go.Scatter(
+                x=pd.to_datetime(kredifaiz()["Tarih"],format="%d-%m-%Y"),
+                y=kredifaiz()[col],
+                mode="lines",
+                name=col,
+                line=dict(color=color)))
+
+        fig.update_layout(
+            title={"text": "Kredi Faizleri (%)", "x": 0.5, "xanchor": "center"},
+            xaxis_title="Tarih",
+            yaxis_title="Faiz",
+            xaxis=dict(tickformat="%d-%m-%Y", tickmode="linear", dtick="M3"))
+        fig.update_xaxes(tickangle=-45)
+        st.plotly_chart(fig)
 
 ##---------------------------------------------------------------------------------
 
@@ -510,4 +735,43 @@ if st.session_state.get("button5_clicked",False):
     fig.update_xaxes(tickangle=-45)
     st.plotly_chart(fig)
 
-#--------------------------------------------------------------------------------------
+##--------------------------------------------------------------------------------------
+
+if st.session_state.get("button6_clicked",False):
+    bisttreemap()
+
+##---------------------------------------------------------------------------------------
+
+if st.session_state.get("button7_clicked",False):
+   veri=hedef_fiyat_yahoo()
+   st.dataframe(veri,hide_index=True,use_container_width=True,width=1200,height=600)
+
+##--------------------------------------------------------------------------------------
+
+if st.session_state.get("button8_clicked",False):
+    st.error("Burası planda yoktu ama süpriz yapayım dedim :)))")
+    cnbcpro()
+
+##-----------------------------------------------------------------------------------------
+
+if st.session_state.get("button9_clicked",False):
+    veri=cds()
+    st.dataframe(veri,hide_index=True,use_container_width=True)
+
+    fig=go.Figure()
+    fig.add_trace(go.Scatter(
+    x=pd.to_datetime(veri["Tarih"],format="%d-%m-%Y"),
+    y=veri["CDS"],
+    mode="lines",
+    name="CDS",
+    line=dict(color="Red")))
+
+    fig.update_layout(title={
+        "text":"Türkiye CDS 5 Yıl","x":0.5,"xanchor":"center"},
+    xaxis_title="Tarih",
+    yaxis_title="CDS",
+    xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M2"))
+    fig.update_xaxes(tickangle=-45)
+    st.plotly_chart(fig)
+
+##----------------------------------------------------------------------------------
