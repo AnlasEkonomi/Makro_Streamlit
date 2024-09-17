@@ -251,8 +251,8 @@ def bisttreemap():
     tablo=pd.read_html(StringIO(r))[2]
     sektor=pd.DataFrame({"Hisse": tablo["Kod"], "Sektör": tablo["Sektör"], "Piyasa Değeri (mn $)": tablo["Piyasa Değeri (mn $)"]})
     tablo2=pd.read_html(StringIO(r))[7]
+    tablo2["Günlük Getiri (%)"]=pd.to_numeric(tablo2["Günlük Getiri (%)"].str.replace('%', '').str.replace(',', '.'),errors='coerce')
     getiri=pd.DataFrame({"Hisse": tablo2["Kod"], "Getiri (%)": tablo2["Günlük Getiri (%)"]/100})
-
     df=pd.merge(sektor,getiri,on="Hisse")
     df["Piyasa Değeri (mn $)"]=df["Piyasa Değeri (mn $)"].str.replace('.', '').str.replace(',', '.').astype("float64")
 
@@ -301,8 +301,17 @@ def cnbcpro():
             soup=BeautifulSoup(res.text,"html.parser")
             doc=etree.HTML(str(soup))
             doc2=doc.xpath("//*[@id='RegularArticle-ArticleBody-5']/span[1]/span/span")
-
-            st.write(doc2[0].text)
+            metin=doc2[0].text 
+            st.markdown(f"""
+<style>
+     .arial {{
+        font-family: Arial, sans-serif;;
+    }}
+</style>
+<div class="arial">
+    {metin}
+</div>
+""", unsafe_allow_html=True)
         except Exception as e:
              st.error("**Hatalı URL. Lütfen tekrar giriniz...**")
 
@@ -311,14 +320,14 @@ def cds():
     url="https://en.macromicro.me/charts/data/68256"
 
     headers={
-        "Accept": "application/json, text/javascript, */*; q=0.01",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
-        "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Authorization": "Bearer 8096cd3a67d6b9d10e0785239a58390a",
-        "Cookie": "PHPSESSID=r2f4losopnom9dt5kjq486boss; _gid=GA1.2.1302961084.1726567296; _fbp=fb.1.1726567296378.35347350480971742; aiExplainOn=off; _hjSession_1543609=eyJpZCI6ImMzYzk3NDRmLTJiOGYtNGQ5NC04ODFlLTIzNDU2MDUwYTM0ZSIsImMiOjE3MjY1NjcyOTcwOTEsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjoxLCJzcCI6MX0=; __lt__cid=147f0834-02cb-4b05-bd97-a9c12ba4c803; __lt__sid=d30c02d1-c4f0aeef; reminder=1726567309; _hjSessionUser_1543609=eyJpZCI6IjE4NzgzZjIxLWE2ODItNTA3Yi04MjVjLWJiYzcxZjg2ZGJjOSIsImNyZWF0ZWQiOjE3MjY1NjcyOTcwOTAsImV4aXN0aW5nIjp0cnVlfQ==; prime7dfomc=1726567532; app_ui_support_btn=5; mm_sess_pages=5; _ga_4CS94JJY2M=GS1.1.1726567296.1.1.1726568202.0.0.0; cf_clearance=DKVck3.Q2OFHp1_Mh6juT.SKiYpRuJbbit9SR1xlWu0-1726568202-1.2.1.1-LL6qtwtUyCeqsVSsz8b6U4m9.n0nFLATCrrSA8Q.a8SRPYmpfx6asGt_ZbbvmSuzDehCJ0x3HdABmz3IAqa1xOKzIvA0Swmn1xF.fuTYHiCtwSx6Qr2.GrtD3mQrPQjnozc7_GlnpHdjl33huAOgVpAjo9z2_Vc3qKNsf4B5qWQB8n.Q2fxku6haJey0BsJMiauDYrPL_zwqa8ylFpWjvjkRwIiFLCKc7Ivb.oGrKJMqMl6e5KLqv89u7BtC3chKqVG_zrTfR7muhL.qBPp_WOTbN3FQ0tD_afaKFrY7GGQeKjyCMzc1aTEW5KGuWJ6iY7DAWfG9j1TM.cNUfKabKqzXn9qvg8CIOmYUtocfUIF3y5OpFsH2iHtadIn9btCG9vWm37Bah.4zd0e0P4oWjw; _ga=GA1.2.1196831987.1726567296; _gat_gtag_UA_66285376_3=1",
-        "Referer": "https://en.macromicro.me/charts/68256/turkey-5year-cds",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
-        "X-Requested-With": "XMLHttpRequest"}
+    "Accept": "application/json, text/javascript, */*; q=0.01",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Authorization": "Bearer 079cc0723dab3646ece15f264c974d45",
+    "Cookie": "_gid=GA1.2.1302961084.1726567296; _fbp=fb.1.1726567296378.35347350480971742; __lt__cid=147f0834-02cb-4b05-bd97-a9c12ba4c803; reminder=1726567309; _hjSessionUser_1543609=eyJpZCI6IjE4NzgzZjIxLWE2ODItNTA3Yi04MjVjLWJiYzcxZjg2ZGJjOSIsImNyZWF0ZWQiOjE3MjY1NjcyOTcwOTAsImV4aXN0aW5nIjp0cnVlfQ==; prime7dfomc=1726567532; PHPSESSID=gr1ggkjghkoqmkb0r1v88e37m5; __lt__sid=d30c02d1-14e9bab2; aiExplainOn=off; _hjSession_1543609=eyJpZCI6IjMwMjFmNjM0LWVkNjEtNDRhOS1iZDRmLTc0NTI4Y2RkZWZlYSIsImMiOjE3MjY2MDA3OTIyMDAsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjowLCJzcCI6MX0=; _gat_gtag_UA_66285376_3=1; cf_clearance=Az50ZuC3cWz2uInOfY9v81z18WrnPu5WhGN3YHmp6zM-1726600792-1.2.1.1-v0MDQQyci52l6jMcRvas8EwuDPaKcbiSyGQw3HdQL0CC_6FAyeDOZ6nGjDclyXPPHrRn.J2HC28tAkm2ozdoiMahS_QoDmi68nxv8CBKhE88bIa5Nw.eizzqIYXhiiSIox2RtdP79eJimijeNWDtO2ISiCKzdcPBjo_SHoNy3Xe.lTZokXuauuIYcFr8twzvFqnGIjs43Y92xEndIaBGBtb9MIUKMWIbk4aOI5kGS02fj0rEEhtaagCz3iPLTyQzQb0GWY0pWLSZ5gqOhlNVKlRR2AIrdCPaBByfiUMMnme7PP4vKfUjQOC2bzSr.CAPnk5.vqZS2J1VHsEjNAgsTarT3FQ4oOb7s2bQyY8glF3NEHhoImw_1LlLLZlXeRBKRhIMLLY_AdBFwGnp3eF_4Q; _ga_4CS94JJY2M=GS1.1.1726600792.2.1.1726600808.0.0.0; _ga=GA1.2.1196831987.1726567296; app_ui_support_btn=2; mm_sess_pages=2",
+    "Referer": "https://en.macromicro.me/charts/68256/turkey-5year-cds",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+    "X-Requested-With": "XMLHttpRequest"}
 
     response=scraper.get(url,headers=headers)
     veri=response.json()["data"]["c:68256"]["series"]
@@ -327,6 +336,38 @@ def cds():
     veri["Tarih"]=veri["Tarih"].dt.strftime('%d-%m-%Y')
     return veri
 
+def ekonomiktakvim():
+    bugün=datetime.today()
+    haftanınilkgünü=bugün-timedelta(days=bugün.weekday())
+    haftanınsongünü=haftanınilkgünü+timedelta(days=6)
+    gün1=str(haftanınilkgünü.strftime("%d"))
+    ay1=str(haftanınilkgünü.strftime("%m"))
+    yıl1=str(haftanınilkgünü.year)
+    gün2=str(haftanınsongünü.strftime("%d"))
+    ay2=str(haftanınsongünü.strftime("%m"))
+    yıl2=str(haftanınsongünü.year)
+
+    url=f'https://yatirim.akbank.com/_vti_bin/AkbankYatirimciPortali/Hisse/Service.svc/EkonomikTakvimForList/{yıl1+ay1+gün1+"000000"}/{yıl2+ay2+gün2+"235900"}'
+    res=requests.get(url)
+    data=res.json()
+
+    deger=[]
+    for i in data["Data"]:
+        key = i["Key"]
+        for value in i["Value"]:
+            value["Key"]=key
+            deger.append(value)
+
+    df=pd.DataFrame(deger)
+    veri=df[["Key","Tsi","Country","Event","Actual","Forecast","Previous"]]
+    veri.columns=["Tarih","Saat (TSİ)","Ülke","Olay","Açıklanan","Tahmin","Önceki"]
+    veri["Tarih"]=pd.to_datetime(veri["Tarih"],format="%d/%m/%Y")
+    bugün=datetime.today().date()
+    veri=veri[veri['Tarih'].dt.date >= bugün]
+    veri["Tarih"]=veri["Tarih"].dt.strftime("%d-%m-%Y")
+    veri["Saat (TSİ)"]=pd.to_datetime(veri["Saat (TSİ)"],format="%H%M").dt.strftime("%H:%M")
+    veri.sort_values(by="Tarih",ascending=True,inplace=True)
+    return veri
 
 ##------------------------------------------------------------------------------------
 
@@ -365,6 +406,7 @@ button6=st.sidebar.button("Bist Tree Map")
 button7=st.sidebar.button("Bist YF Hedef Fiyat")
 button8=st.sidebar.button("CNBC Pro Makaleler")
 button9=st.sidebar.button("CDS")
+button10=st.sidebar.button("Ekonomik Takvim")
 
 if button1:
     st.session_state["button1_clicked"]=True
@@ -376,6 +418,7 @@ if button1:
     st.session_state["button7_clicked"]=False
     st.session_state["button8_clicked"]=False
     st.session_state["button9_clicked"]=False
+    st.session_state["button10_clicked"]=False
 
 if button2:
     st.session_state["button1_clicked"]=False
@@ -387,6 +430,7 @@ if button2:
     st.session_state["button7_clicked"]=False
     st.session_state["button8_clicked"]=False
     st.session_state["button9_clicked"]=False
+    st.session_state["button10_clicked"]=False
 
 if button3:
     st.session_state["button1_clicked"]=False
@@ -398,6 +442,7 @@ if button3:
     st.session_state["button7_clicked"]=False
     st.session_state["button8_clicked"]=False
     st.session_state["button9_clicked"]=False
+    st.session_state["button10_clicked"]=False
 
 if button4:
     st.session_state["button1_clicked"]=False
@@ -409,6 +454,7 @@ if button4:
     st.session_state["button7_clicked"]=False
     st.session_state["button8_clicked"]=False
     st.session_state["button9_clicked"]=False
+    st.session_state["button10_clicked"]=False
 
 if button5:
     st.session_state["button1_clicked"]=False
@@ -420,6 +466,7 @@ if button5:
     st.session_state["button7_clicked"]=False
     st.session_state["button8_clicked"]=False
     st.session_state["button9_clicked"]=False
+    st.session_state["button10_clicked"]=False
 
 if button6:
     st.session_state["button1_clicked"]=False
@@ -431,6 +478,7 @@ if button6:
     st.session_state["button7_clicked"]=False
     st.session_state["button8_clicked"]=False
     st.session_state["button9_clicked"]=False
+    st.session_state["button10_clicked"]=False
 
 if button7:
     st.session_state["button1_clicked"]=False
@@ -442,6 +490,7 @@ if button7:
     st.session_state["button7_clicked"]=True
     st.session_state["button8_clicked"]=False
     st.session_state["button9_clicked"]=False
+    st.session_state["button10_clicked"]=False
 
 if button8:
     st.session_state["button1_clicked"]=False
@@ -453,6 +502,7 @@ if button8:
     st.session_state["button7_clicked"]=False
     st.session_state["button8_clicked"]=True
     st.session_state["button9_clicked"]=False
+    st.session_state["button10_clicked"]=False
 
 if button9:
     st.session_state["button1_clicked"]=False
@@ -464,6 +514,19 @@ if button9:
     st.session_state["button7_clicked"]=False
     st.session_state["button8_clicked"]=False
     st.session_state["button9_clicked"]=True
+    st.session_state["button10_clicked"]=False
+
+if button10:
+    st.session_state["button1_clicked"]=False
+    st.session_state["button2_clicked"]=False
+    st.session_state["button3_clicked"]=False
+    st.session_state["button4_clicked"]=False
+    st.session_state["button5_clicked"]=False
+    st.session_state["button6_clicked"]=False
+    st.session_state["button7_clicked"]=False
+    st.session_state["button8_clicked"]=False
+    st.session_state["button9_clicked"]=False
+    st.session_state["button10_clicked"]=True
 
 ##-----------------------------------------------------------------------------
 
@@ -773,5 +836,12 @@ if st.session_state.get("button9_clicked",False):
     xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M2"))
     fig.update_xaxes(tickangle=-45)
     st.plotly_chart(fig)
+
+##----------------------------------------------------------------------------------
+
+if st.session_state.get("button10_clicked",False):
+    veri=ekonomiktakvim()
+    st.markdown("### **Bu Hafta**",unsafe_allow_html=True)
+    st.dataframe(veri,hide_index=True,use_container_width=True,height=700)
 
 ##----------------------------------------------------------------------------------
