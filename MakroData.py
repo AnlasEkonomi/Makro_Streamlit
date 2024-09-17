@@ -241,8 +241,9 @@ def hissefiyat(hisse,ilk,son):
                 "Sermaye","PD","PD Dolar","Dolar Bazlı Min","Dolar Bazlı Max","Dolar Bazlı AOF"]
         
         return veri
-    except KeyError as e:
-        veri2=pd.DataFrame(columns=veri.columns)
+    except (KeyError,ValueError,UnboundLocalError) as e:
+        veri2=pd.DataFrame(columns=["Tarih","Kapanış","AOF","Min","Max","Hacim","DolarTL","Dolar Bazlı Fiyat",
+                "Sermaye","PD","PD Dolar","Dolar Bazlı Min","Dolar Bazlı Max","Dolar Bazlı AOF"])
         return veri2
 
 def bisttreemap():
@@ -316,24 +317,33 @@ def cnbcpro():
              st.error("**Hatalı URL. Lütfen tekrar giriniz...**")
 
 def cds():
-    scraper=cloudscraper.CloudScraper()
-    url="https://en.macromicro.me/charts/data/68256"
+    bugün=datetime.today()
+    gün=str(bugün.strftime("%d"))
+    ay=str(bugün.strftime("%m"))
+    yıl=str(bugün.year)
 
-    headers={
-    "Accept": "application/json, text/javascript, */*; q=0.01",
-    "Accept-Encoding": "gzip, deflate, br, zstd",
-    "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Authorization": "Bearer 079cc0723dab3646ece15f264c974d45",
-    "Cookie": "_gid=GA1.2.1302961084.1726567296; _fbp=fb.1.1726567296378.35347350480971742; __lt__cid=147f0834-02cb-4b05-bd97-a9c12ba4c803; reminder=1726567309; _hjSessionUser_1543609=eyJpZCI6IjE4NzgzZjIxLWE2ODItNTA3Yi04MjVjLWJiYzcxZjg2ZGJjOSIsImNyZWF0ZWQiOjE3MjY1NjcyOTcwOTAsImV4aXN0aW5nIjp0cnVlfQ==; prime7dfomc=1726567532; PHPSESSID=gr1ggkjghkoqmkb0r1v88e37m5; __lt__sid=d30c02d1-14e9bab2; aiExplainOn=off; _hjSession_1543609=eyJpZCI6IjMwMjFmNjM0LWVkNjEtNDRhOS1iZDRmLTc0NTI4Y2RkZWZlYSIsImMiOjE3MjY2MDA3OTIyMDAsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjowLCJzcCI6MX0=; _gat_gtag_UA_66285376_3=1; cf_clearance=Az50ZuC3cWz2uInOfY9v81z18WrnPu5WhGN3YHmp6zM-1726600792-1.2.1.1-v0MDQQyci52l6jMcRvas8EwuDPaKcbiSyGQw3HdQL0CC_6FAyeDOZ6nGjDclyXPPHrRn.J2HC28tAkm2ozdoiMahS_QoDmi68nxv8CBKhE88bIa5Nw.eizzqIYXhiiSIox2RtdP79eJimijeNWDtO2ISiCKzdcPBjo_SHoNy3Xe.lTZokXuauuIYcFr8twzvFqnGIjs43Y92xEndIaBGBtb9MIUKMWIbk4aOI5kGS02fj0rEEhtaagCz3iPLTyQzQb0GWY0pWLSZ5gqOhlNVKlRR2AIrdCPaBByfiUMMnme7PP4vKfUjQOC2bzSr.CAPnk5.vqZS2J1VHsEjNAgsTarT3FQ4oOb7s2bQyY8glF3NEHhoImw_1LlLLZlXeRBKRhIMLLY_AdBFwGnp3eF_4Q; _ga_4CS94JJY2M=GS1.1.1726600792.2.1.1726600808.0.0.0; _ga=GA1.2.1196831987.1726567296; app_ui_support_btn=2; mm_sess_pages=2",
-    "Referer": "https://en.macromicro.me/charts/68256/turkey-5year-cds",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
-    "X-Requested-With": "XMLHttpRequest"}
+    scraper=cloudscraper.CloudScraper()
+    url=f'https://api.investing.com/api/financialdata/historical/1096486?start-date=2008-02-01&end-date={yıl+"-"+ay+"-"+gün}&time-frame=Daily&add-missing-rows=false'
+
+    headers = {
+        "Accept": "*/*",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Content-Type": "application/json",
+        "Origin": "https://tr.investing.com",
+        "Referer": "https://tr.investing.com/",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+        "Domain-ID": "tr"}
 
     response=scraper.get(url,headers=headers)
-    veri=response.json()["data"]["c:68256"]["series"]
-    veri=pd.DataFrame(veri[0],columns=["Tarih","CDS"])
-    veri["Tarih"]=pd.to_datetime(veri["Tarih"])
+    veri=response.json()["data"]
+    veri=[{"rowDate": item["rowDate"],"last_close": item["last_close"]} for item in veri]
+    veri=pd.DataFrame(veri)
+    veri.columns=["Tarih","CDS"]
+    veri["Tarih"]=pd.to_datetime(veri["Tarih"],format='%d.%m.%Y')
+    veri.sort_values(by="Tarih",ascending=True,inplace=True)
     veri["Tarih"]=veri["Tarih"].dt.strftime('%d-%m-%Y')
+    veri["CDS"]=veri["CDS"].str.replace(',', '.').astype(float)
     return veri
 
 def ekonomiktakvim():
@@ -830,7 +840,7 @@ if st.session_state.get("button9_clicked",False):
     line=dict(color="Red")))
 
     fig.update_layout(title={
-        "text":"Türkiye CDS 5 Yıl","x":0.5,"xanchor":"center"},
+        "text":"Türkiye CDS 5 Year","x":0.5,"xanchor":"center"},
     xaxis_title="Tarih",
     yaxis_title="CDS",
     xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M2"))
