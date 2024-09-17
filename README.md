@@ -16,6 +16,7 @@ Proje geliştikçe kodlar zamanla güncellenecektir...
 
 https://github.com/user-attachments/assets/8b8ba5fc-b2fb-4228-9430-fa9aaa2a992d
 
+![222](https://github.com/user-attachments/assets/6c3e2ac8-02fe-48d2-b785-4301be97b549)
 
 Tüm eğitimler için;
 
