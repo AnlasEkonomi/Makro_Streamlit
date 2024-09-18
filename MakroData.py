@@ -344,6 +344,7 @@ def cds():
     veri.sort_values(by="Tarih",ascending=True,inplace=True)
     veri["Tarih"]=veri["Tarih"].dt.strftime('%d-%m-%Y')
     veri["CDS"]=veri["CDS"].str.replace(',', '.').astype(float)
+    veri["CDS Oynaklık"]=veri["CDS"].pct_change()
     return veri
 
 def ekonomiktakvim():
@@ -376,19 +377,68 @@ def ekonomiktakvim():
     veri=veri[veri['Tarih'].dt.date >= bugün]
     veri["Tarih"]=veri["Tarih"].dt.strftime("%d-%m-%Y")
     veri["Saat (TSİ)"]=pd.to_datetime(veri["Saat (TSİ)"],format="%H%M").dt.strftime("%H:%M")
-    veri.sort_values(by="Tarih",ascending=True,inplace=True)
+    veri.sort_values(by=["Tarih","Saat (TSİ)"],ascending=True,inplace=True)
+    return veri
+
+def tüfe(frekans):
+    start="01-01-2003"
+    end=datetime.today().strftime("%d-%m-%Y")
+    veri=evdsapi.get_data(["TP.FG.J0","TP.FG.J01","TP.FG.J02","TP.FG.J03","TP.FG.J04",
+                           "TP.FG.J05","TP.FG.J06","TP.FG.J07","TP.FG.J08","TP.FG.J09",
+                           "TP.FG.J10","TP.FG.J11","TP.FG.J12"],startdate=start,enddate=end)
+    veri.columns=["Tarih","Genel","Gıda ve Alkolsüz İçecekler","Alkollü İçecekler ve Tütün",
+                  "Giyim ve Ayakkabı","Konut,","Ev Eşyası","Sağlık","Ulaştırma","Haberleşme",
+                  "Eğlence ve Kültür","Eğitim","Lokanta ve Oteller","Çeşitli Mal ve Hizmetler"]
+    veri["Tarih"]=pd.to_datetime(veri["Tarih"])
+    veri["Tarih"] = veri["Tarih"].dt.to_period("M")
+    veri.set_index("Tarih",inplace=True)
+
+    if frekans=="Aylık":
+        veri=veri.pct_change()*100
+    elif frekans=="Yıllık":
+        veri=veri.pct_change(12)*100
+
+    veri=veri.round(2)
+    veri=veri.reset_index()
+    veri.dropna(axis=0,inplace=True)
+    return veri
+
+def üfe(frekans):
+    start="01-01-2003"
+    end=datetime.today().strftime("%d-%m-%Y")
+    veri=evdsapi.get_data(["TP.TUFE1YI.T1","TP.TUFE1YI.T2","TP.TUFE1YI.T15","TP.TUFE1YI.T118",
+                           "TP.TUFE1YI.T124"],startdate=start,enddate=end)
+    veri.columns=["Tarih","Genel","Madencilik ve Taş Ocaklığı","İmalat",
+                  "Elektrik Gaz Buhar ve İklimlendirme",
+                  "Su Temini Kanalizasyon Atık Yönetimi"]
+    veri["Tarih"]=pd.to_datetime(veri["Tarih"])
+    veri["Tarih"]=veri["Tarih"].dt.to_period("M")
+    veri.set_index("Tarih",inplace=True)
+
+    if frekans=="Aylık":
+        veri=veri.pct_change()*100
+    elif frekans=="Yıllık":
+        veri=veri.pct_change(12)*100
+
+    veri=veri.round(2)
+    veri=veri.reset_index()
+    veri.dropna(axis=0,inplace=True)
     return veri
 
 ##------------------------------------------------------------------------------------
 
 st.markdown("""
     <style>
+    body {
+        background-color: white;
+    }
     .container {
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
         margin: 0;
+        position: relative;
     }
     .title {
         color: red;
@@ -397,146 +447,50 @@ st.markdown("""
         border-radius: 10px;
         text-align: center;
         font-family: 'Freestyle Script', cursive;
-        font-size: 55px; 
+        font-size: 55px;
+        position: relative;
+    }
+    .time-box {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        background-color: #ffffff;
+        font-family: 'Freestyle Script', cursive;;
+        font-size: 25px;
     }
     </style>
     """, unsafe_allow_html=True)
 
 st.markdown('<h1 class="title">Via Anlaşılır Ekonomi</h1>',unsafe_allow_html=True)
+tarihbugün=datetime.now().strftime('%d/%m/%Y')
+st.markdown(f'<div class="time-box">{tarihbugün}</div>',unsafe_allow_html=True)
 st.sidebar.title("Göstergeler")
 
 ##-----------------------------------------------------------------------------
 
-button1=st.sidebar.button("MB APİ Fonlama")
-button2=st.sidebar.button("MB Faizler")
-button3=st.sidebar.button("MB Kur Değerleri")
-button4=st.sidebar.button("Bilançolar")
-button5=st.sidebar.button("Geçmiş Fiyat")
-button6=st.sidebar.button("Bist Tree Map")
-button7=st.sidebar.button("Bist YF Hedef Fiyat")
-button8=st.sidebar.button("CNBC Pro Makaleler")
-button9=st.sidebar.button("CDS")
-button10=st.sidebar.button("Ekonomik Takvim")
+buttons=[
+    ("MB APİ Fonlama","button1_clicked"),
+    ("MB Faizler","button2_clicked"),
+    ("MB Kur Değerleri","button3_clicked"),
+    ("Bilançolar","button4_clicked"),
+    ("Geçmiş Fiyat","button5_clicked"),
+    ("Bist Tree Map","button6_clicked"),
+    ("Bist YF Hedef Fiyat","button7_clicked"),
+    ("CNBC Pro Makaleler","button8_clicked"),
+    ("CDS","button9_clicked"),
+    ("Ekonomik Takvim","button10_clicked"),
+    ("TÜFE","button11_clicked"),
+    ("ÜFE","button12_clicked")]
 
-if button1:
-    st.session_state["button1_clicked"]=True
-    st.session_state["button2_clicked"]=False
-    st.session_state["button3_clicked"]=False
-    st.session_state["button4_clicked"]=False
-    st.session_state["button5_clicked"]=False
-    st.session_state["button6_clicked"]=False
-    st.session_state["button7_clicked"]=False
-    st.session_state["button8_clicked"]=False
-    st.session_state["button9_clicked"]=False
-    st.session_state["button10_clicked"]=False
+def reset_buttons():
+    for _, key in buttons:
+        st.session_state[key]=False
 
-if button2:
-    st.session_state["button1_clicked"]=False
-    st.session_state["button2_clicked"]=True
-    st.session_state["button3_clicked"]=False
-    st.session_state["button4_clicked"]=False
-    st.session_state["button5_clicked"]=False
-    st.session_state["button6_clicked"]=False
-    st.session_state["button7_clicked"]=False
-    st.session_state["button8_clicked"]=False
-    st.session_state["button9_clicked"]=False
-    st.session_state["button10_clicked"]=False
-
-if button3:
-    st.session_state["button1_clicked"]=False
-    st.session_state["button2_clicked"]=False
-    st.session_state["button3_clicked"]=True
-    st.session_state["button4_clicked"]=False
-    st.session_state["button5_clicked"]=False
-    st.session_state["button6_clicked"]=False
-    st.session_state["button7_clicked"]=False
-    st.session_state["button8_clicked"]=False
-    st.session_state["button9_clicked"]=False
-    st.session_state["button10_clicked"]=False
-
-if button4:
-    st.session_state["button1_clicked"]=False
-    st.session_state["button2_clicked"]=False
-    st.session_state["button3_clicked"]=False
-    st.session_state["button4_clicked"]=True
-    st.session_state["button5_clicked"]=False
-    st.session_state["button6_clicked"]=False
-    st.session_state["button7_clicked"]=False
-    st.session_state["button8_clicked"]=False
-    st.session_state["button9_clicked"]=False
-    st.session_state["button10_clicked"]=False
-
-if button5:
-    st.session_state["button1_clicked"]=False
-    st.session_state["button2_clicked"]=False
-    st.session_state["button3_clicked"]=False
-    st.session_state["button4_clicked"]=False
-    st.session_state["button5_clicked"]=True
-    st.session_state["button6_clicked"]=False
-    st.session_state["button7_clicked"]=False
-    st.session_state["button8_clicked"]=False
-    st.session_state["button9_clicked"]=False
-    st.session_state["button10_clicked"]=False
-
-if button6:
-    st.session_state["button1_clicked"]=False
-    st.session_state["button2_clicked"]=False
-    st.session_state["button3_clicked"]=False
-    st.session_state["button4_clicked"]=False
-    st.session_state["button5_clicked"]=False
-    st.session_state["button6_clicked"]=True
-    st.session_state["button7_clicked"]=False
-    st.session_state["button8_clicked"]=False
-    st.session_state["button9_clicked"]=False
-    st.session_state["button10_clicked"]=False
-
-if button7:
-    st.session_state["button1_clicked"]=False
-    st.session_state["button2_clicked"]=False
-    st.session_state["button3_clicked"]=False
-    st.session_state["button4_clicked"]=False
-    st.session_state["button5_clicked"]=False
-    st.session_state["button6_clicked"]=False
-    st.session_state["button7_clicked"]=True
-    st.session_state["button8_clicked"]=False
-    st.session_state["button9_clicked"]=False
-    st.session_state["button10_clicked"]=False
-
-if button8:
-    st.session_state["button1_clicked"]=False
-    st.session_state["button2_clicked"]=False
-    st.session_state["button3_clicked"]=False
-    st.session_state["button4_clicked"]=False
-    st.session_state["button5_clicked"]=False
-    st.session_state["button6_clicked"]=False
-    st.session_state["button7_clicked"]=False
-    st.session_state["button8_clicked"]=True
-    st.session_state["button9_clicked"]=False
-    st.session_state["button10_clicked"]=False
-
-if button9:
-    st.session_state["button1_clicked"]=False
-    st.session_state["button2_clicked"]=False
-    st.session_state["button3_clicked"]=False
-    st.session_state["button4_clicked"]=False
-    st.session_state["button5_clicked"]=False
-    st.session_state["button6_clicked"]=False
-    st.session_state["button7_clicked"]=False
-    st.session_state["button8_clicked"]=False
-    st.session_state["button9_clicked"]=True
-    st.session_state["button10_clicked"]=False
-
-if button10:
-    st.session_state["button1_clicked"]=False
-    st.session_state["button2_clicked"]=False
-    st.session_state["button3_clicked"]=False
-    st.session_state["button4_clicked"]=False
-    st.session_state["button5_clicked"]=False
-    st.session_state["button6_clicked"]=False
-    st.session_state["button7_clicked"]=False
-    st.session_state["button8_clicked"]=False
-    st.session_state["button9_clicked"]=False
-    st.session_state["button10_clicked"]=True
+for label, key in buttons:
+    if st.sidebar.button(label):
+        reset_buttons() 
+        st.session_state[key]=True
 
 ##-----------------------------------------------------------------------------
 
@@ -559,7 +513,7 @@ if st.session_state.get("button1_clicked",False):
 
     fig2=go.Figure()
     fig2.add_trace(go.Scatter(
-    x=pd.to_datetime(mbapi()["Tarih"], format="%d-%m-%Y"),
+    x=pd.to_datetime(mbapi()["Tarih"],format="%d-%m-%Y"),
     y=mbapi()["AOFM"],
     mode="lines",
     line=dict(color="red"),
@@ -822,7 +776,6 @@ if st.session_state.get("button7_clicked",False):
 ##--------------------------------------------------------------------------------------
 
 if st.session_state.get("button8_clicked",False):
-    st.error("Burası planda yoktu ama süpriz yapayım dedim :)))")
     cnbcpro()
 
 ##-----------------------------------------------------------------------------------------
@@ -845,13 +798,95 @@ if st.session_state.get("button9_clicked",False):
     yaxis_title="CDS",
     xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M2"))
     fig.update_xaxes(tickangle=-45)
+
+    fig2=go.Figure()
+    fig2.add_trace(go.Scatter(
+    x=pd.to_datetime(veri["Tarih"],format="%d-%m-%Y"),
+    y=veri["CDS Oynaklık"],
+    mode="lines",
+    name="CDS Oynaklık",
+    line=dict(color="Blue")))
+
+    fig2.update_layout(title={
+        "text":"Türkiye CDS 5 Year Oynaklık","x":0.5,"xanchor":"center"},
+    xaxis_title="Tarih",
+    yaxis_title="Oynaklık",
+    xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M2"))
+    fig2.update_xaxes(tickangle=-45)
     st.plotly_chart(fig)
+    st.plotly_chart(fig2)
 
 ##----------------------------------------------------------------------------------
 
 if st.session_state.get("button10_clicked",False):
     veri=ekonomiktakvim()
-    st.markdown("### **Bu Hafta**",unsafe_allow_html=True)
+    st.markdown("### **Bu Hafta Takvimi**",unsafe_allow_html=True)
     st.dataframe(veri,hide_index=True,use_container_width=True,height=700)
 
 ##----------------------------------------------------------------------------------
+
+if st.session_state.get("button11_clicked",False):
+    secenek=["Aylık","Yıllık"]
+    st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',unsafe_allow_html=True)
+    secim=st.radio("",secenek,index=0,horizontal=True)
+    veri=tüfe(secim)
+    st.dataframe(veri,hide_index=True,use_container_width=True)
+
+    veri["Tarih"]=veri["Tarih"].dt.to_timestamp()
+    fig=go.Figure()
+    columns=["Genel","Gıda ve Alkolsüz İçecekler","Alkollü İçecekler ve Tütün",
+                  "Giyim ve Ayakkabı","Konut,","Ev Eşyası","Sağlık","Ulaştırma","Haberleşme",
+                  "Eğlence ve Kültür","Eğitim","Lokanta ve Oteller","Çeşitli Mal ve Hizmetler"]
+    renkler=["Red","Blue","Green","Orange","Purple","Black","Cyan","Magenta","Salmon","Gray",
+               "Brown","Pink","Crimson"]
+
+    for col, color in zip(columns, renkler):
+        fig.add_trace(go.Scatter(
+            x=veri["Tarih"],
+            y=veri[col],
+            mode="lines",
+            name=col,
+            line=dict(color=color)))
+
+    fig.update_layout(
+        title={"text": "Tüketici Enflasyonu (%)", "x": 0.5, "xanchor": "center"},
+        xaxis_title="Tarih",
+        yaxis_title="Enflasyon",
+        xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M3"))
+
+    fig.update_xaxes(tickangle=-45)
+    st.plotly_chart(fig)
+
+##-------------------------------------------------------------------------------------------
+
+if st.session_state.get("button12_clicked",False):
+    secenek=["Aylık","Yıllık"]
+    st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',unsafe_allow_html=True)
+    secim=st.radio("",secenek,index=0,horizontal=True)
+    veri=üfe(secim)
+    st.dataframe(veri,hide_index=True,use_container_width=True)
+
+    veri["Tarih"]=veri["Tarih"].dt.to_timestamp()
+    fig=go.Figure()
+    columns=["Genel","Madencilik ve Taş Ocaklığı","İmalat","Elektrik Gaz Buhar ve İklimlendirme",
+            "Su Temini Kanalizasyon Atık Yönetimi"]
+    renkler=["Red","Blue","Green","Orange"]
+
+    for col, color in zip(columns, renkler):
+        fig.add_trace(go.Scatter(
+            x=veri["Tarih"],
+            y=veri[col],
+            mode="lines",
+            name=col,
+            line=dict(color=color)))
+
+    fig.update_layout(
+        title={"text": "Üretici Enflasyonu (%)", "x": 0.5, "xanchor": "center"},
+        xaxis_title="Tarih",
+        yaxis_title="Enflasyon",
+        xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M3"))
+
+    fig.update_xaxes(tickangle=-45)
+    st.plotly_chart(fig)
+
+##---------------------------------------------------------------------------------------
