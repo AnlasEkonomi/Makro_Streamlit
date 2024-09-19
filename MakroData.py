@@ -7,10 +7,12 @@ from urllib.error import HTTPError
 import requests
 from bs4 import BeautifulSoup
 import plotly.express as px
+from plotly.subplots import make_subplots
 from io import StringIO
 from yahooquery import Ticker
 from lxml import etree
 import cloudscraper
+import yfinance as yf 
 
 
 evdsapi=ev.evdsAPI("Your Api Key")
@@ -252,7 +254,7 @@ def bisttreemap():
     tablo=pd.read_html(StringIO(r))[2]
     sektor=pd.DataFrame({"Hisse": tablo["Kod"], "Sektör": tablo["Sektör"], "Piyasa Değeri (mn $)": tablo["Piyasa Değeri (mn $)"]})
     tablo2=pd.read_html(StringIO(r))[7]
-    tablo2["Günlük Getiri (%)"]=pd.to_numeric(tablo2["Günlük Getiri (%)"].str.replace('%', '').str.replace(',', '.'),errors='coerce')
+    ##tablo2["Günlük Getiri (%)"]=pd.to_numeric(tablo2["Günlük Getiri (%)"].str.replace('%', '').str.replace(',', '.'),errors='coerce')
     getiri=pd.DataFrame({"Hisse": tablo2["Kod"], "Getiri (%)": tablo2["Günlük Getiri (%)"]/100})
     df=pd.merge(sektor,getiri,on="Hisse")
     df["Piyasa Değeri (mn $)"]=df["Piyasa Değeri (mn $)"].str.replace('.', '').str.replace(',', '.').astype("float64")
@@ -386,7 +388,7 @@ def tüfe(frekans):
     veri=evdsapi.get_data(["TP.FG.J0","TP.FG.J01","TP.FG.J02","TP.FG.J03","TP.FG.J04",
                            "TP.FG.J05","TP.FG.J06","TP.FG.J07","TP.FG.J08","TP.FG.J09",
                            "TP.FG.J10","TP.FG.J11","TP.FG.J12"],startdate=start,enddate=end)
-    veri.columns=["Tarih","Genel","Gıda ve Alkolsüz İçecekler","Alkollü İçecekler ve Tütün",
+    veri.columns=["Tarih","TÜFE","Gıda ve Alkolsüz İçecekler","Alkollü İçecekler ve Tütün",
                   "Giyim ve Ayakkabı","Konut,","Ev Eşyası","Sağlık","Ulaştırma","Haberleşme",
                   "Eğlence ve Kültür","Eğitim","Lokanta ve Oteller","Çeşitli Mal ve Hizmetler"]
     veri["Tarih"]=pd.to_datetime(veri["Tarih"])
@@ -408,7 +410,7 @@ def üfe(frekans):
     end=datetime.today().strftime("%d-%m-%Y")
     veri=evdsapi.get_data(["TP.TUFE1YI.T1","TP.TUFE1YI.T2","TP.TUFE1YI.T15","TP.TUFE1YI.T118",
                            "TP.TUFE1YI.T124"],startdate=start,enddate=end)
-    veri.columns=["Tarih","Genel","Madencilik ve Taş Ocaklığı","İmalat",
+    veri.columns=["Tarih","ÜFE","Madencilik ve Taş Ocaklığı","İmalat",
                   "Elektrik Gaz Buhar ve İklimlendirme",
                   "Su Temini Kanalizasyon Atık Yönetimi"]
     veri["Tarih"]=pd.to_datetime(veri["Tarih"])
@@ -424,6 +426,73 @@ def üfe(frekans):
     veri=veri.reset_index()
     veri.dropna(axis=0,inplace=True)
     return veri
+
+def ctüfe(frekans):
+    start="01-01-2003"
+    end=datetime.today().strftime("%d-%m-%Y")
+    veri=evdsapi.get_data(["TP.FE.OKTG01","TP.FE.OKTG02","TP.FE.OKTG03","TP.FE.OKTG04",
+                           "TP.FE.OKTG05","TP.FE.OKTG27","TP.FE.OKTG28"],startdate=start,enddate=end)
+    veri.columns=["Tarih","TÜFE","Mevsimlik Ürünler Hariç","İşlenmemiş Gıda, Enerji, Alkollü İçkiler ve Tütün ile Altın Hariç",
+                  "Enerji, Gıda ve Alkolsüz İçecekler, Alkollü İçkiler ile Tütün Ürünleri ve Altın Hariç",
+                  "İşlenmemiş Gıda, Alkollü İçecekler ve Tütün Ürünleri Hariç",
+                  "Alkollü İçecekler ve Tütün Hariç","Yönetilen Yönlendirilen Fiyatlar Hariç"]
+    veri["Tarih"]=pd.to_datetime(veri["Tarih"])
+    veri["Tarih"]=veri["Tarih"].dt.to_period("M")
+    veri.set_index("Tarih",inplace=True)
+
+    if frekans=="Aylık":
+        veri=veri.pct_change()*100
+    elif frekans=="Yıllık":
+        veri=veri.pct_change(12)*100
+
+    veri=veri.round(2)
+    veri=veri.reset_index()
+    veri.dropna(axis=0,inplace=True)
+    return veri
+
+def ito(frekans):
+    start="01-01-2003"
+    end=datetime.today().strftime("%d-%m-%Y")
+    veri=evdsapi.get_data(["TP.FE.OKTG01","TP.FG.B01.95","TP.FG.B02.95",
+                           "TP.FG.B03.95","TP.FG.B04.95","TP.FG.B05.95",
+                           "TP.FG.B06.95","TP.FG.B07.95","TP.FG.B08.95",
+                           "TP.FG.B09.95"],startdate=start,enddate=end)
+    veri.columns=["Tarih","TÜFE","İTO","Gıda","Konut","Ev Eşyası","Giyim",
+                  "Sağlık","Ulaştırma","Kültür-Eğitim","Diğer"]
+    veri["Tarih"]=pd.to_datetime(veri["Tarih"])
+    veri["Tarih"]=veri["Tarih"].dt.to_period("M")
+    veri.set_index("Tarih",inplace=True)
+
+    if frekans=="Aylık":
+        veri=veri.pct_change()*100
+    elif frekans=="Yıllık":
+        veri=veri.pct_change(12)*100
+
+    veri=veri.round(2)
+    veri=veri.reset_index()
+    veri.dropna(axis=0,inplace=True)
+    return veri
+
+def döviz(frekans):
+    if frekans=="Günlük":
+        veri=pd.DataFrame(yf.download(["USDTRY=X","EURTRY=X","DX-Y.NYB"],start="2005-01-01")["Adj Close"])
+        veri.dropna(axis=0,inplace=True)
+        veri.reset_index(inplace=True)
+        veri.columns=["Tarih","DXY","EuroTL","DolarTL"]
+        veri["Sepet Kur"]=(veri["DolarTL"]+veri["EuroTL"])/2
+        veri["Tarih"]=pd.to_datetime(veri["Tarih"],format="%d-%m-%Y")
+        veri["Tarih"]=veri["Tarih"].dt.strftime("%d-%m-%Y")
+    if frekans=="Aylık":
+        veri=pd.DataFrame(yf.download(["USDTRY=X","EURTRY=X","DX-Y.NYB"],start="2005-01-01",
+                                      interval="1mo")["Adj Close"])
+        veri.dropna(axis=0,inplace=True)
+        veri.reset_index(inplace=True)
+        veri.columns=["Tarih","DXY","EuroTL","DolarTL"]
+        veri["Sepet Kur"]=(veri["DolarTL"]+veri["EuroTL"])/2
+        veri["Tarih"]=pd.to_datetime(veri["Tarih"],format="%d-%m-%Y")
+        veri["Tarih"]=veri["Tarih"].dt.strftime("%m-%Y")
+    return veri
+
 
 ##------------------------------------------------------------------------------------
 
@@ -481,7 +550,10 @@ buttons=[
     ("CDS","button9_clicked"),
     ("Ekonomik Takvim","button10_clicked"),
     ("TÜFE","button11_clicked"),
-    ("ÜFE","button12_clicked")]
+    ("ÜFE","button12_clicked"),
+    ("TÜFE Çekirdek","button13_clicked"),
+    ("İTO","button14_clicked"),
+    ("Döviz","button15_clicked")]
 
 def reset_buttons():
     for _, key in buttons:
@@ -834,13 +906,13 @@ if st.session_state.get("button11_clicked",False):
 
     veri["Tarih"]=veri["Tarih"].dt.to_timestamp()
     fig=go.Figure()
-    columns=["Genel","Gıda ve Alkolsüz İçecekler","Alkollü İçecekler ve Tütün",
+    columns=["TÜFE","Gıda ve Alkolsüz İçecekler","Alkollü İçecekler ve Tütün",
                   "Giyim ve Ayakkabı","Konut,","Ev Eşyası","Sağlık","Ulaştırma","Haberleşme",
                   "Eğlence ve Kültür","Eğitim","Lokanta ve Oteller","Çeşitli Mal ve Hizmetler"]
     renkler=["Red","Blue","Green","Orange","Purple","Black","Cyan","Magenta","Salmon","Gray",
                "Brown","Pink","Crimson"]
 
-    for col, color in zip(columns, renkler):
+    for col,color in zip(columns,renkler):
         fig.add_trace(go.Scatter(
             x=veri["Tarih"],
             y=veri[col],
@@ -849,13 +921,35 @@ if st.session_state.get("button11_clicked",False):
             line=dict(color=color)))
 
     fig.update_layout(
-        title={"text": "Tüketici Enflasyonu (%)", "x": 0.5, "xanchor": "center"},
+        title={"text": "Tüketici Enflasyonu 2003=100 (%)", "x": 0.5, "xanchor": "center"},
         xaxis_title="Tarih",
         yaxis_title="Enflasyon",
         xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M3"))
 
     fig.update_xaxes(tickangle=-45)
+    
+    son_satir=veri.tail(1).iloc[0]
+    sıralı_sütun=son_satir[columns].sort_values(ascending=False).index
+    sıralı_deger=son_satir[columns].sort_values(ascending=False).values
+    sıralı_renkler=[renkler[columns.index(col)] for col in sıralı_sütun]
+
+    fig2=go.Figure()
+    fig2.add_trace(go.Bar(
+    x=sıralı_deger,
+    y=sıralı_sütun,
+    marker_color=sıralı_renkler,
+    orientation="h",
+    text=sıralı_deger,
+    textposition="outside"))
+
+    fig2.update_layout(
+        title={"text": "TÜFE 2003=100 (%)", "x": 0.5, "xanchor": "center"},
+        xaxis_title="Enflasyon",
+        yaxis_title="Kategori",
+        xaxis=dict(tickangle=-45))
+    
     st.plotly_chart(fig)
+    st.plotly_chart(fig2)
 
 ##-------------------------------------------------------------------------------------------
 
@@ -868,9 +962,9 @@ if st.session_state.get("button12_clicked",False):
 
     veri["Tarih"]=veri["Tarih"].dt.to_timestamp()
     fig=go.Figure()
-    columns=["Genel","Madencilik ve Taş Ocaklığı","İmalat","Elektrik Gaz Buhar ve İklimlendirme",
+    columns=["ÜFE","Madencilik ve Taş Ocaklığı","İmalat","Elektrik Gaz Buhar ve İklimlendirme",
             "Su Temini Kanalizasyon Atık Yönetimi"]
-    renkler=["Red","Blue","Green","Orange"]
+    renkler=["Red","Blue","Green","Orange","Black"]
 
     for col, color in zip(columns, renkler):
         fig.add_trace(go.Scatter(
@@ -881,12 +975,192 @@ if st.session_state.get("button12_clicked",False):
             line=dict(color=color)))
 
     fig.update_layout(
-        title={"text": "Üretici Enflasyonu (%)", "x": 0.5, "xanchor": "center"},
+        title={"text": "Üretici Enflasyonu 2003=100 (%)", "x": 0.5, "xanchor": "center"},
         xaxis_title="Tarih",
         yaxis_title="Enflasyon",
         xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M3"))
 
     fig.update_xaxes(tickangle=-45)
+    
+    son_satir=veri.tail(1).iloc[0]
+    sıralı_sütun=son_satir[columns].sort_values(ascending=False).index
+    sıralı_deger=son_satir[columns].sort_values(ascending=False).values
+    sıralı_renkler=[renkler[columns.index(col)] for col in sıralı_sütun]
+
+    fig2=go.Figure()
+    fig2.add_trace(go.Bar(
+    x=sıralı_deger,
+    y=sıralı_sütun,
+    marker_color=sıralı_renkler,
+    orientation="h",
+    text=sıralı_deger,
+    textposition="outside"))
+
+    fig2.update_layout(
+        title={"text": "ÜFE 2003=100 (%)", "x": 0.5, "xanchor": "center"},
+        xaxis_title="Enflasyon",
+        yaxis_title="Kategori",
+        xaxis=dict(tickangle=-45))
+    
+    st.plotly_chart(fig)
+    st.plotly_chart(fig2)
+
+##---------------------------------------------------------------------------------------
+
+if st.session_state.get("button13_clicked",False):
+    secenek=["Aylık","Yıllık"]
+    st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',unsafe_allow_html=True)
+    secim=st.radio("",secenek,index=0,horizontal=True)
+    veri=ctüfe(secim)
+    st.dataframe(veri,hide_index=True,use_container_width=True)
+
+    veri["Tarih"]=veri["Tarih"].dt.to_timestamp()
+    fig=go.Figure()
+    columns=["TÜFE","Mevsimlik Ürünler Hariç","İşlenmemiş Gıda, Enerji, Alkollü İçkiler ve Tütün ile Altın Hariç",
+            "Enerji, Gıda ve Alkolsüz İçecekler, Alkollü İçkiler ile Tütün Ürünleri ve Altın Hariç",
+            "İşlenmemiş Gıda, Alkollü İçecekler ve Tütün Ürünleri Hariç",
+            "Alkollü İçecekler ve Tütün Hariç","Yönetilen Yönlendirilen Fiyatlar Hariç"]
+    renkler=["Red","Blue","Green","Orange","Black","Cyan","Magenta","Salmon","Gray"]
+
+    for col, color in zip(columns,renkler):
+        fig.add_trace(go.Scatter(
+            x=veri["Tarih"],
+            y=veri[col],
+            mode="lines",
+            name=col,
+            line=dict(color=color)))
+
+    fig.update_layout(
+        title={"text": "Çekirdek Enflasyon 2003=100 (%)", "x": 0.5, "xanchor": "center"},
+        xaxis_title="Tarih",
+        yaxis_title="Enflasyon",
+        xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M3"))
+
+    fig.update_xaxes(tickangle=-45)
+    
+    son_satir=veri.tail(1).iloc[0]
+    sıralı_sütun=son_satir[columns].sort_values(ascending=False).index
+    sıralı_deger=son_satir[columns].sort_values(ascending=False).values
+    sıralı_renkler=[renkler[columns.index(col)] for col in sıralı_sütun]
+
+    fig2=go.Figure()
+    fig2.add_trace(go.Bar(
+    x=sıralı_deger,
+    y=sıralı_sütun,
+    marker_color=sıralı_renkler,
+    orientation="h",
+    text=sıralı_deger,
+    textposition="outside"))
+
+    fig2.update_layout(
+        title={"text": "Çekirdek TÜFE 2003=100 (%)", "x": 0.5, "xanchor": "center"},
+        xaxis_title="Enflasyon",
+        yaxis_title="Kategori",
+        xaxis=dict(tickangle=-45))
+    
+    st.plotly_chart(fig)
+    st.plotly_chart(fig2)
+
+##-----------------------------------------------------------------------------------------
+if st.session_state.get("button14_clicked",False):
+    secenek=["Aylık","Yıllık"]
+    st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',unsafe_allow_html=True)
+    secim=st.radio("",secenek,index=0,horizontal=True)
+    veri=ito(secim)
+    st.dataframe(veri,hide_index=True,use_container_width=True)
+
+    veri["Tarih"]=veri["Tarih"].dt.to_timestamp()
+    fig=go.Figure()
+    columns=["TÜFE","İTO","Gıda","Konut","Ev Eşyası","Giyim",
+            "Sağlık","Ulaştırma","Kültür-Eğitim","Diğer"]
+    renkler=["Red","Blue","Green","Orange","Black","Cyan","Magenta","Salmon","Gray",
+             "Brown"]
+
+    for col, color in zip(columns,renkler):
+        fig.add_trace(go.Scatter(
+            x=veri["Tarih"],
+            y=veri[col],
+            mode="lines",
+            name=col,
+            line=dict(color=color)))
+
+    fig.update_layout(
+        title={"text": "İTO Enflasyon 1995=100 (%)", "x": 0.5, "xanchor": "center"},
+        xaxis_title="Tarih",
+        yaxis_title="Enflasyon",
+        xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M3"))
+
+    fig.update_xaxes(tickangle=-45)
+    
+    son_satir=veri.tail(1).iloc[0]
+    sıralı_sütun=son_satir[columns].sort_values(ascending=False).index
+    sıralı_deger=son_satir[columns].sort_values(ascending=False).values
+    sıralı_renkler=[renkler[columns.index(col)] for col in sıralı_sütun]
+
+    fig2=go.Figure()
+    fig2.add_trace(go.Bar(
+    x=sıralı_deger,
+    y=sıralı_sütun,
+    marker_color=sıralı_renkler,
+    orientation="h",
+    text=sıralı_deger,
+    textposition="outside"))
+
+    fig2.update_layout(
+        title={"text": "İTO 1995=100 (%)", "x": 0.5, "xanchor": "center"},
+        xaxis_title="Enflasyon",
+        yaxis_title="Kategori",
+        xaxis=dict(tickangle=-45))
+    
+    st.plotly_chart(fig)
+    st.plotly_chart(fig2)
+
+##--------------------------------------------------------------------------------------
+
+if st.session_state.get("button15_clicked",False):
+    secenek=["Günlük","Aylık"]
+    st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',unsafe_allow_html=True)
+    secim=st.radio("",secenek,index=0,horizontal=True)
+    veri=döviz(secim)
+    st.dataframe(veri,hide_index=True,use_container_width=True)
+
+    fig=make_subplots(specs=[[{"secondary_y":True}]])
+    columns=["DXY","EuroTL","DolarTL","Sepet Kur"]
+    renkler=["Red","Blue","Green","Black"]
+
+    if secim=="Günlük":
+        tarih_formatı="%d-%m-%Y"
+    else:
+        tarih_formatı="%m-%Y"
+
+    for col,color in zip(columns, renkler):
+        if col=="DXY":
+            fig.add_trace(
+                go.Scatter(
+                    x=pd.to_datetime(veri["Tarih"],format=tarih_formatı),
+                    y=veri[col],
+                    mode="lines",
+                    name=col,
+                    line=dict(color=color)),
+                secondary_y=True)
+        else:
+            fig.add_trace(
+                go.Scatter(
+                    x=pd.to_datetime(veri["Tarih"],format=tarih_formatı),
+                    y=veri[col],
+                    mode="lines",
+                    name=col,
+                    line=dict(color=color)),
+                secondary_y=False)
+    fig.update_layout(
+        title={"text": "Döviz","x": 0.5,"xanchor": "center"},
+        xaxis_title="Tarih",
+        yaxis_title="Döviz",
+        xaxis=dict(tickformat=tarih_formatı,tickmode="linear",dtick="M3"),
+        yaxis=dict(title="EuroTL / DolarTL / Sepet Kur"), 
+        yaxis2=dict(title="DXY"))
+    fig.update_xaxes(tickangle=-45)
     st.plotly_chart(fig)
 
 ##---------------------------------------------------------------------------------------
+
