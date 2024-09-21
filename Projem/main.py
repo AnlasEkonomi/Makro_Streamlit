@@ -55,64 +55,70 @@ iletisim_links=[
 iletisim=SocialMediaIcons(iletisim_links)
 iletisim.render(sidebar=True,justify_content="start")
 
-mbapi=st.Page("mbapi.py",title="MB Api Fonlama",icon="🛑", 
+mbapi=st.Page("mbapi.py",title="MB Api Fonlama",icon="📌", 
             default=False)
 
-mbfaizler=st.Page("mbfaizler.py",title="MB Faizleri",icon="🛑", 
+mbfaizler=st.Page("mbfaizler.py",title="MB Faizleri",icon="📌", 
             default=False)
 
-mbkurlar=st.Page("mbkurlar.py",title="MB Kur Verileri",icon="🛑", 
+mbkurlar=st.Page("mbkurlar.py",title="MB Kur Verileri",icon="📌", 
             default=False)
 
-cds=st.Page("cds.py",title="CDS Türkiye",icon="🛑", 
+cds=st.Page("cds.py",title="CDS Türkiye",icon="📌", 
             default=False)
 
-ekotakvim=st.Page("ekonomiktakvim.py",title="Ekonomi Takvimi",icon="🛑", 
+ekotakvim=st.Page("ekonomiktakvim.py",title="Ekonomi Takvimi",icon="📌", 
             default=False)
 
-tüfe=st.Page("tüfe.py",title="TÜFE Enflasyonu",icon="🛑", 
+tüfe=st.Page("tüfe.py",title="TÜFE Enflasyonu",icon="📌", 
             default=False)
 
-ctüfe=st.Page("ctüfe.py",title="Çekirdek TÜFE Enflasyonu",icon="🛑", 
+ctüfe=st.Page("ctüfe.py",title="Çekirdek TÜFE Enflasyonu",icon="📌", 
             default=False)
 
-üfe=st.Page("üfe.py",title="ÜFE Enflasyonu",icon="🛑", 
+üfe=st.Page("üfe.py",title="ÜFE Enflasyonu",icon="📌", 
             default=False)
 
-ito=st.Page("ito.py",title="İTO Enflasyonu",icon="🛑", 
+ito=st.Page("ito.py",title="İTO Enflasyonu",icon="📌", 
             default=False)
 
-issizlik=st.Page("issizlik.py",title="İşsizlik",icon="🛑", 
+issizlik=st.Page("issizlik.py",title="İşsizlik",icon="📌", 
             default=False)
 
-bilancolar=st.Page("bilancolar.py",title="Hisse Senedi Bilançoları",icon="☠️", 
+banknot=st.Page("banknot.py",title="Banknot Dağılımı",icon="📌", 
             default=False)
 
-hissefiyat=st.Page("hissefiyat.py",title="Hisse Senedi Fiyatları",icon="☠️", 
+dısticaret=st.Page("dısticaret.py",title="Dış Ticaret",icon="📌", 
             default=False)
 
-bisttreemap=st.Page("bisttreemap.py",title="Bist TreeMap",icon="☠️", 
+bilancolar=st.Page("bilancolar.py",title="Hisse Senedi Bilançoları",icon="🔷", 
             default=False)
 
-yahoofiyat=st.Page("bistyfhedef.py",title="Yahoo Hedef Fiyat",icon="☠️", 
+hissefiyat=st.Page("hissefiyat.py",title="Hisse Senedi Fiyatları",icon="🔷", 
             default=False)
 
-cnbc=st.Page("cnbcpro.py",title="CNBC Pro Makaleler",icon="☠️", 
+bisttreemap=st.Page("bisttreemap.py",title="Bist TreeMap",icon="🔷", 
             default=False)
 
-döviz=st.Page("döviz.py",title="Döviz",icon="☠️", 
+yahoofiyat=st.Page("bistyfhedef.py",title="Yahoo Hedef Fiyat",icon="🔷", 
             default=False)
 
-bist=st.Page("bist.py",title="Bist",icon="☠️", 
+cnbc=st.Page("cnbcpro.py",title="CNBC Pro Makaleler",icon="🔷", 
             default=False)
 
-altın=st.Page("altın.py",title="Altın",icon="☠️", 
+döviz=st.Page("döviz.py",title="Döviz",icon="🔷", 
+            default=False)
+
+bist=st.Page("bist.py",title="Bist",icon="🔷", 
+            default=False)
+
+altın=st.Page("altın.py",title="Altın",icon="🔷", 
             default=False)
 
 pg=st.navigation(
         {
         "Makro Veriler":[mbapi,mbfaizler,mbkurlar,cds,ekotakvim,tüfe,
-                         ctüfe,üfe,ito,issizlik],
+                         ctüfe,üfe,ito,issizlik,banknot,dısticaret],
         "Finansal Veriler":[bilancolar,hissefiyat,bisttreemap,yahoofiyat,
                             cnbc,döviz,bist,altın]
         })
