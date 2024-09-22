@@ -11,6 +11,7 @@ def hissead():
     hisseler=[a.string for a in s.find("select",id="ddlAddCompare").find("optgroup").find_all("option")]
     return hisseler
 
+
 def bilanco(hisse,para_birim):
     tarihler=[]
     yıllar=[]
@@ -106,6 +107,7 @@ def bilanco(hisse,para_birim):
     veri3[başlık[1:]] = veri3[başlık[1:]].astype(float)
     veri3=veri3.fillna(0)
     return veri3
+
 
 st.markdown("**Hisse Senedi Seçin:**")
 st.session_state["seçilen_hisse"]=seçim=st.selectbox('', hissead())

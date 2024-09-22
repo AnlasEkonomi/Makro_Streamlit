@@ -32,12 +32,22 @@ def dısticaret(frekans):
         if column !="Toplam":
             veri1[f"{column} Oranı (%)"]=(veri1[column]/veri1["Toplam"]).map(lambda x: f"{x:.2%}")
             veri2[f"{column} Oranı (%)"]=(veri2[column]/veri2["Toplam"]).map(lambda x: f"{x:.2%}")
-    return veri1,veri2
+    
+    veri3=pd.DataFrame(columns=["Tarih","İhracat","İthalat","Dış Ticaret Hacmi",
+                                "Dış Ticaret Dengesi","İhracatın İthalatı Karşılama Oranı"])
+    veri3["Tarih"]=veri1["Tarih"]
+    veri3["İhracat"]=veri1["Toplam"]
+    veri3["İthalat"]=veri2["Toplam"]
+    veri3["Dış Ticaret Hacmi"]=veri3["İhracat"]+veri3["İthalat"]
+    veri3["Dış Ticaret Dengesi"]=veri3["İhracat"]-veri3["İthalat"]
+    veri3["İhracatın İthalatı Karşılama Oranı"]=(veri3["İhracat"]/veri3["İthalat"]).map(lambda x: f"{x:.2%}")
+    
+    return veri1,veri2,veri3
 
 secenek=["Aylık","Yıllık"]
 st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',unsafe_allow_html=True)
 secim=st.radio("",secenek,index=0,horizontal=True)
-veri1,veri2=dısticaret(secim)
+veri1,veri2,veri3=dısticaret(secim)
 
 st.subheader("İhracat Verileri")
 st.dataframe(veri1,hide_index=True,use_container_width=True)
@@ -45,14 +55,29 @@ st.dataframe(veri1,hide_index=True,use_container_width=True)
 st.subheader("İthalat Verileri")
 st.dataframe(veri2,hide_index=True,use_container_width=True)
 
-fig_total=go.Figure()
-fig_total.add_trace(go.Scatter(x=veri1["Tarih"],y=veri1["Toplam"],mode="lines",name="İhracat Toplam"))
-fig_total.add_trace(go.Scatter(x=veri2["Tarih"],y=veri2["Toplam"],mode="lines",name="İthalat Toplam"))
+st.subheader("Dış Ticaret Dengesi")
+st.dataframe(veri3,hide_index=True,use_container_width=True)
 
-fig_total.update_xaxes(range=[min(veri1["Tarih"].min(),veri2["Tarih"].min()), 
-                               max(veri1["Tarih"].max(),veri2["Tarih"].max())])
-fig_total.update_layout(title=f"İhracat ve İthalat Toplam ({secim})",xaxis_title="Tarih",yaxis_title="Değer")
-fig_total.update_xaxes(tickangle=-45)
+fig_total=go.Figure()
+fig_total.add_trace(go.Scatter(x=veri1["Tarih"],y=veri1["Toplam"], 
+                               mode="lines",name="İhracat", 
+                               line=dict(color="red",width=2)))
+fig_total.add_trace(go.Scatter(x=veri2["Tarih"],y=veri2["Toplam"], 
+                               mode="lines",name="İthalat", 
+                               line=dict(color="green",width=2)))
+fig_total.add_trace(go.Bar(x=veri3["Tarih"],y=veri3["Dış Ticaret Dengesi"], 
+                           name="Dış Ticaret Dengesi", 
+                           marker=dict(color="blue",opacity=0.8)))
+
+max_eks=max(veri1["Toplam"].max(),veri2["Toplam"].max())
+min_eks=min(veri3["Dış Ticaret Dengesi"].min(), -5000000)
+
+fig_total.update_layout(
+    title=f"Dış Ticaret Dengesi ({secim})",
+    xaxis=dict(showgrid=False,tickangle=-45),
+    yaxis=dict(title="Değer",range=[min_eks,max_eks],zeroline=True,zerolinewidth=2,zerolinecolor="gray"),
+    barmode="overlay",
+    showlegend=True)
 
 if "Yıllık" in secim:
     fig_total.update_xaxes(dtick="M12",tickformat="%Y")
@@ -60,6 +85,39 @@ else:
     fig_total.update_xaxes(dtick="M3",tickformat="%m-%Y")
 
 st.plotly_chart(fig_total,use_container_width=True)
+
+
+fig_total2=go.Figure()
+
+veri3["İhracatın İthalatı Karşılama Oranı"]=(veri3["İhracatın İthalatı Karşılama Oranı"]
+    .str.replace("%", "")
+    .astype(float)/100)
+
+veri3["Dış Ticaret Hacmi"]=veri3["Dış Ticaret Hacmi"].astype(float)
+
+fig_total2.add_trace(go.Bar(
+    x=veri3["Tarih"],y=veri3["Dış Ticaret Hacmi"],name="Dış Ticaret Hacmi", 
+    marker=dict(color="green")))
+
+fig_total2.add_trace(go.Scatter(
+    x=veri3["Tarih"],y=veri3["İhracatın İthalatı Karşılama Oranı"], 
+    mode="lines",name="İhracatın İthalatı Karşılama Oranı", 
+    line=dict(color="blue",width=2),yaxis="y2"))
+
+fig_total2.update_layout(
+    title=f"Hacim ve Karşılama Oranı ({secim})",
+    xaxis=dict(showgrid=False,tickangle=-45),
+    yaxis=dict(title="Dış Ticaret Hacmi",zeroline=True,zerolinewidth=2,zerolinecolor="gray"),
+    yaxis2=dict(title="İhracatın İthalatı Karşılama Oranı",overlaying='y',side='right'),
+    showlegend=True)
+
+if "Yıllık" in secim:
+    fig_total2.update_xaxes(dtick="M12", tickformat="%Y")
+else:
+    fig_total2.update_xaxes(dtick="M3", tickformat="%m-%Y")
+
+st.plotly_chart(fig_total2, use_container_width=True)
+
 
 renkler=["blue","black","green","red","purple"]
 

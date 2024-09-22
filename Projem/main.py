@@ -94,6 +94,9 @@ dısticaret=st.Page("dısticaret.py",title="Dış Ticaret",icon="📌",
 bilancolar=st.Page("bilancolar.py",title="Hisse Senedi Bilançoları",icon="🔷", 
             default=False)
 
+hissebilgi=st.Page("hissebilgi.py",title="Hisse Senedi Bilgileri",icon="🔷", 
+            default=False)
+
 hissefiyat=st.Page("hissefiyat.py",title="Hisse Senedi Fiyatları",icon="🔷", 
             default=False)
 
@@ -119,7 +122,7 @@ pg=st.navigation(
         {
         "Makro Veriler":[mbapi,mbfaizler,mbkurlar,cds,ekotakvim,tüfe,
                          ctüfe,üfe,ito,issizlik,banknot,dısticaret],
-        "Finansal Veriler":[bilancolar,hissefiyat,bisttreemap,yahoofiyat,
+        "Finansal Veriler":[bilancolar,hissebilgi,hissefiyat,bisttreemap,yahoofiyat,
                             cnbc,döviz,bist,altın]
         })
 
