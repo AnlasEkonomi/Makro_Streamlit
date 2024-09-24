@@ -16,11 +16,7 @@ Proje geliştikçe kodlar zamanla güncellenecektir. Tamamen eğitim amaçlı ol
 
 
 
-https://github.com/user-attachments/assets/8d2294ce-7900-40e4-aa9f-7e808cef3d35
-
-
-
-![333](https://github.com/user-attachments/assets/b44c5f25-96f6-4252-899b-9b380df8118b)
+![sssss](https://github.com/user-attachments/assets/b3ee355a-916d-4093-a86b-7c8e264eb42d)
 
 
 
