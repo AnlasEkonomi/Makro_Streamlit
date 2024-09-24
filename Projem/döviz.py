@@ -40,7 +40,8 @@ for col,color in zip(columns,renkler):
 fig.update_layout(
     title={"text":"Döviz","x":0.5,"xanchor":"center"},
     xaxis_title="Tarih",yaxis_title="Döviz",
-    xaxis=dict(tickformat=tarih_formatı, tickmode="linear", dtick="M3"),
+    xaxis=dict(tickformat=tarih_formatı,tickmode="linear",dtick="M3",
+               rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)),
     yaxis=dict(title="EuroTL / DolarTL / Sepet Kur"),yaxis2=dict(title="DXY"))
 fig.update_xaxes(tickangle=-45)
 

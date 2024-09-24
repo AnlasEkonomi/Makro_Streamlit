@@ -91,6 +91,12 @@ banknot=st.Page("banknot.py",title="Banknot Dağılımı",icon="📌",
 dısticaret=st.Page("dısticaret.py",title="Dış Ticaret",icon="📌", 
             default=False)
 
+mbbilanco=st.Page("mbbilanco.py",title="MB Bilanço",icon="📌", 
+            default=False)
+
+konut=st.Page("konut.py",title="Konut Satış İstatistikleri",icon="📌", 
+            default=False)
+
 bilancolar=st.Page("bilancolar.py",title="Hisse Senedi Bilançoları",icon="🔷", 
             default=False)
 
@@ -118,12 +124,16 @@ bist=st.Page("bist.py",title="Bist",icon="🔷",
 altın=st.Page("altın.py",title="Altın",icon="🔷", 
             default=False)
 
+vix=st.Page("vix.py",title="VIX",icon="🔷", 
+            default=False)
+
 pg=st.navigation(
         {
         "Makro Veriler":[mbapi,mbfaizler,mbkurlar,cds,ekotakvim,tüfe,
-                         ctüfe,üfe,ito,issizlik,banknot,dısticaret],
+                         ctüfe,üfe,ito,issizlik,banknot,dısticaret,mbbilanco,
+                         konut],
         "Finansal Veriler":[bilancolar,hissebilgi,hissefiyat,bisttreemap,yahoofiyat,
-                            cnbc,döviz,bist,altın]
+                            cnbc,döviz,bist,altın,vix]
         })
 
 pg.run()

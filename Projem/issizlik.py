@@ -59,7 +59,8 @@ if secim=="Mevsimsellikten Arındırılmamış İş Gücü 15+ Nüfus":
             "text": "İş Gücü","x": 0.5, "xanchor": "center"},
     xaxis_title="Tarih",
     yaxis_title="Değer",
-    xaxis=dict(tickformat="%Y-%m",tickmode="linear"),
+    xaxis=dict(tickformat="%Y-%m",tickmode="linear",
+               rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)),
     yaxis=dict(tickformat="d"))
     fig.update_xaxes(tickangle=-45)
 
@@ -74,7 +75,8 @@ if secim=="Mevsimsellikten Arındırılmamış İş Gücü 15+ Nüfus":
             "text": "İş Gücü (%)","x":0.5,"xanchor":"center"},
     xaxis_title="Tarih",
     yaxis_title="Değer",
-    xaxis=dict(tickformat="%Y-%m",tickmode="linear"),
+    xaxis=dict(tickformat="%Y-%m",tickmode="linear",
+               rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)),
     yaxis=dict(tickformat="d"))
     fig2.update_xaxes(tickangle=-45)
 
@@ -96,7 +98,8 @@ if secim=="Mevsimsellikten Arındırılmış İş Gücü 15+ Nüfus":
             "text": "İş Gücü","x": 0.5, "xanchor": "center"},
     xaxis_title="Tarih",
     yaxis_title="Değer",
-    xaxis=dict(tickformat="%Y-%m",tickmode="linear"),
+    xaxis=dict(tickformat="%Y-%m",tickmode="linear",
+               rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)),
     yaxis=dict(tickformat="d"))
     fig.update_xaxes(tickangle=-45)
 
@@ -111,7 +114,8 @@ if secim=="Mevsimsellikten Arındırılmış İş Gücü 15+ Nüfus":
             "text": "İş Gücü (%)","x":0.5,"xanchor":"center"},
     xaxis_title="Tarih",
     yaxis_title="Değer",
-    xaxis=dict(tickformat="%Y-%m",tickmode="linear"),
+    xaxis=dict(tickformat="%Y-%m",tickmode="linear",
+               rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)),
     yaxis=dict(tickformat="d"))
     fig2.update_xaxes(tickangle=-45)
 

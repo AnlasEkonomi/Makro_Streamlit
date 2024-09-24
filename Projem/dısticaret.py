@@ -74,7 +74,8 @@ min_eks=min(veri3["Dış Ticaret Dengesi"].min(), -5000000)
 
 fig_total.update_layout(
     title=f"Dış Ticaret Dengesi ({secim})",
-    xaxis=dict(showgrid=False,tickangle=-45),
+    xaxis=dict(showgrid=False,tickangle=-45,
+               rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)),
     yaxis=dict(title="Değer",range=[min_eks,max_eks],zeroline=True,zerolinewidth=2,zerolinecolor="gray"),
     barmode="overlay",
     showlegend=True)
@@ -106,7 +107,8 @@ fig_total2.add_trace(go.Scatter(
 
 fig_total2.update_layout(
     title=f"Hacim ve Karşılama Oranı ({secim})",
-    xaxis=dict(showgrid=False,tickangle=-45),
+    xaxis=dict(showgrid=False,tickangle=-45,
+               rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)),
     yaxis=dict(title="Dış Ticaret Hacmi",zeroline=True,zerolinewidth=2,zerolinecolor="gray"),
     yaxis2=dict(title="İhracatın İthalatı Karşılama Oranı",overlaying='y',side='right'),
     showlegend=True)
@@ -126,7 +128,8 @@ for i, column in enumerate(veri1.columns):
     if "Oranı (%)" in column:
         fig_ihracat.add_trace(go.Bar(x=veri1["Tarih"],y=veri1[column],name=column,marker_color=renkler[i % len(renkler)]))
 
-fig_ihracat.update_layout(title=f"İhracat Oranları ({secim})",xaxis_title="Tarih",yaxis_title="Oran (%)", xaxis_tickangle=-45)
+fig_ihracat.update_layout(title=f"İhracat Oranları ({secim})",xaxis_title="Tarih",yaxis_title="Oran (%)",xaxis_tickangle=-45,
+                          xaxis=dict(rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
 if "Yıllık" in secim:
     fig_ihracat.update_xaxes(dtick="M12",tickformat="%Y")
 else:
@@ -139,7 +142,8 @@ for i, column in enumerate(veri2.columns):
     if "Oranı (%)" in column:
         fig_ithalat.add_trace(go.Bar(x=veri2["Tarih"],y=veri2[column],name=column,marker_color=renkler[i % len(renkler)]))
 
-fig_ithalat.update_layout(title=f"İthalat Oranları ({secim})",xaxis_title="Tarih",yaxis_title="Oran (%)",xaxis_tickangle=-45)
+fig_ithalat.update_layout(title=f"İthalat Oranları ({secim})",xaxis_title="Tarih",yaxis_title="Oran (%)",xaxis_tickangle=-45,
+                          xaxis=dict(rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
 if "Yıllık" in secim:
     fig_ithalat.update_xaxes(dtick="M12",tickformat="%Y")
 else:

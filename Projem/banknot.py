@@ -55,6 +55,7 @@ if "Yıllık" in secim:
 else:
     fig.update_xaxes(dtick="M3",tickformat="%m-%Y")
 
-fig.update_layout(title=baslik,xaxis_title="Tarih",yaxis_title="")
+fig.update_layout(title=baslik,xaxis_title="Tarih",yaxis_title="",
+                  xaxis=dict(rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
 fig.update_xaxes(tickangle=-45)
 st.plotly_chart(fig, use_container_width=True)

@@ -49,7 +49,8 @@ for col,color in zip(columns, renkler):
 fig.update_layout(
     title={"text":"İTO Enflasyon 1995=100 (%)","x":0.5,"xanchor":"center"},
     xaxis_title="Tarih",yaxis_title="Enflasyon",
-    xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M3"))
+    xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M3",
+               rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
 fig.update_xaxes(tickangle=-45)
 
 son_satir=veri.tail(1).iloc[0]

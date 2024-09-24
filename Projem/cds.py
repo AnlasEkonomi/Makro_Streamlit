@@ -38,13 +38,14 @@ for col,color,title in [("CDS","Red","Türkiye CDS 5 Year"),
                             ("CDS Oynaklık","Blue","Türkiye CDS 5 Year Oynaklık")]:
     fig=go.Figure()
     fig.add_trace(go.Scatter(
-        x=pd.to_datetime(veri["Tarih"], format="%d-%m-%Y"),y=veri[col],
+        x=pd.to_datetime(veri["Tarih"],format="%d-%m-%Y"),y=veri[col],
         mode="lines",
         name=col,
         line=dict(color=color)))
 
     fig.update_layout(title={"text":title,"x":0.5,"xanchor":"center"},
                         xaxis_title="Tarih",yaxis_title=col,
-                        xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M2"))
+                        xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M2",
+                                   rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
     fig.update_xaxes(tickangle=-45)
     st.plotly_chart(fig)

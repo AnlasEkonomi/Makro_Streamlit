@@ -49,13 +49,14 @@ if "seçilen_hisse" in st.session_state:
 
     fig=go.Figure()
     fig.add_trace(go.Scatter(
-        x=pd.to_datetime(veri["Tarih"], format="%d-%m-%Y"),y=veri["Kapanış"],
+        x=pd.to_datetime(veri["Tarih"],format="%d-%m-%Y"),y=veri["Kapanış"],
         mode="lines",
         name="Fiyat",
         line=dict(color="Red")))
 
     fig.update_layout(title={"text":"Hisse Kapanış Fiyatı","x":0.5,"xanchor":"center"},
                         xaxis_title="Tarih",yaxis_title="Fiyat",
-                        xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M1"))
+                        xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M1",
+                                   rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
     fig.update_xaxes(tickangle=-45)
     st.plotly_chart(fig)

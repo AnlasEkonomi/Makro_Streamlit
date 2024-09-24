@@ -76,7 +76,8 @@ fig.add_trace(go.Scatter(
 
 fig.update_layout(title={"text":"XU100","x": 0.5,"xanchor":"center"},
                     xaxis_title="Tarih",yaxis_title="Endeks",
-                    xaxis=dict(tickformat=tarih_formatı, tickmode="linear", dtick=dtick))
+                    xaxis=dict(tickformat=tarih_formatı,tickmode="linear",dtick=dtick,
+                               rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
 fig.update_xaxes(tickangle=-45)
 
 if secim=="Yıllık":
@@ -96,7 +97,8 @@ else:
 
 fig2.update_layout(title={"text":"XU100 Getiri (%)","x":0.5,"xanchor":"center"},
                     xaxis_title="Tarih",yaxis_title="Getiri",
-                    xaxis=dict(tickformat=tarih_formatı, tickmode="linear", dtick=dtick))
+                    xaxis=dict(tickformat=tarih_formatı,tickmode="linear",dtick=dtick,
+                               rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
 fig2.update_xaxes(tickangle=-45)
 
 st.plotly_chart(fig)

@@ -56,7 +56,8 @@ for col,color in zip(columns,renkler):
 fig.update_layout(
     title={"text":"Çekirdek Enflasyon 2003=100 (%)","x":0.5,"xanchor":"center"},
     xaxis_title="Tarih",yaxis_title="Enflasyon",
-    xaxis=dict(tickformat="%m-%Y", tickmode="linear", dtick="M3"))
+    xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M3",
+               rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
 fig.update_xaxes(tickangle=-45)
 
 son_satir=veri.tail(1).iloc[0]
@@ -70,7 +71,7 @@ fig2.add_trace(go.Bar(x=sıralı_deger,y=sıralı_sütun,marker_color=sıralı_r
 
 fig2.update_layout(
     title={"text":"Çekirdek TÜFE 2003=100 (%)","x":0.5,"xanchor":"center"},
-    xaxis_title="Enflasyon", yaxis_title="Kategori", xaxis=dict(tickangle=-45))
+    xaxis_title="Enflasyon",yaxis_title="Kategori",xaxis=dict(tickangle=-45))
 
 st.plotly_chart(fig)
 st.plotly_chart(fig2)

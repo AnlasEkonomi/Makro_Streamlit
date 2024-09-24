@@ -118,6 +118,7 @@ if faiz_secim in veri_dict:
         fig.update_layout(
             title={"text": f"{faiz_secim} (%)", "x":0.5,"xanchor":"center"},
             xaxis_title="Tarih",yaxis_title="Faiz",
-            xaxis=dict(tickformat="%d-%m-%Y", tickmode="linear",dtick="M3"))
+            xaxis=dict(tickformat="%d-%m-%Y", tickmode="linear",dtick="M3",
+                       rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
         fig.update_xaxes(tickangle=-45)
         st.plotly_chart(fig)

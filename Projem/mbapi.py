@@ -36,7 +36,8 @@ def mbapi():
             title={"text":title,"x": 0.5,"xanchor":"center"},
             xaxis_title="Tarih",
             yaxis_title=y_column,
-            xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M1"))
+            xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M1",
+                       rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
         fig.update_xaxes(tickangle=-45)
         
         st.plotly_chart(fig)

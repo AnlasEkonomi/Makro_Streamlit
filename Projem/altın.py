@@ -59,7 +59,8 @@ fig1.add_trace(go.Scatter(
     line=dict(color="Red")))
 fig1.update_layout(title={"text":"Ons Altın ($)","x": 0.5,"xanchor":"center"},
                     xaxis_title="Tarih", yaxis_title="Fiyat",
-                    xaxis=dict(tickformat=tarih_formatı, tickmode="linear", dtick=dtick))
+                    xaxis=dict(tickformat=tarih_formatı,tickmode="linear",dtick=dtick,
+                               rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
 fig1.update_xaxes(tickangle=-45)
 
 fig2=go.Figure()
@@ -69,7 +70,8 @@ fig2.add_trace(go.Scatter(
     line=dict(color="Red")))
 fig2.update_layout(title={"text":"Gram Altın (TL)","x": 0.5,"xanchor":"center"},
                     xaxis_title="Tarih", yaxis_title="Fiyat",
-                    xaxis=dict(tickformat=tarih_formatı, tickmode="linear", dtick=dtick))
+                    xaxis=dict(tickformat=tarih_formatı, tickmode="linear",dtick=dtick,
+                               rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
 fig2.update_xaxes(tickangle=-45)
 
 if secim=="Aylık":
@@ -79,7 +81,8 @@ if secim=="Aylık":
         y=veri["Ons Getiri Nominal (%)"],name="Getiri",marker=dict(color="Blue")))
     fig3.update_layout(title={"text":"Ons Altın Getiri Nominal (%)","x": 0.5,"xanchor":"center"},
                         xaxis_title="Tarih", yaxis_title="Getiri",
-                        xaxis=dict(tickformat=tarih_formatı, tickmode="linear", dtick=dtick))
+                        xaxis=dict(tickformat=tarih_formatı,tickmode="linear",dtick=dtick,
+                                   rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
     fig3.update_xaxes(tickangle=-45)
 
     fig4=go.Figure()
@@ -88,7 +91,8 @@ if secim=="Aylık":
         y=veri["Gram Getiri Nominal (%)"],name="Getiri",marker=dict(color="Blue")))
     fig4.update_layout(title={"text":"Gram Altın Getiri Nominal (%)","x":0.5,"xanchor":"center"},
                         xaxis_title="Tarih", yaxis_title="Getiri",
-                        xaxis=dict(tickformat=tarih_formatı, tickmode="linear", dtick=dtick))
+                        xaxis=dict(tickformat=tarih_formatı,tickmode="linear",dtick=dtick,
+                                   rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
     fig4.update_xaxes(tickangle=-45)
 
     st.plotly_chart(fig1)
@@ -106,7 +110,8 @@ else:
         y=veri["Gram Getiri Reel (%)"],name="Reel Getiri",marker_color="Blue"))
     fig3.update_layout(title={"text": "Gram Altın Getiri Nominal ve Reel (%)", "x": 0.5, "xanchor": "center"},
                         xaxis_title="Tarih", yaxis_title="Getiri",
-                        xaxis=dict(tickformat="%Y", tickmode="linear", dtick="M12"),
+                        xaxis=dict(tickformat="%Y",tickmode="linear",dtick="M12",
+                                   rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)),
                         barmode="group")
     fig3.update_xaxes(tickangle=-45)
 
