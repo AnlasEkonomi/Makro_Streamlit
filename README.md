@@ -12,7 +12,10 @@ EVDS kullanımı ve API almak için;
 https://www.youtube.com/watch?v=StIy_Mno2X8
 
 
-Proje geliştikçe kodlar zamanla güncellenecektir. Tamamen eğitim amaçlı olup bu nedenden dolayı kodlar sizlere açıktır. TİCARİ AMAÇ İLE KULLANILAMAZ !!!
+Proje geliştikçe kodlar zamanla güncellenecektir. Tamamen eğitim amaçlı olup bu nedenden dolayı kodlar sizlere açıktır. 
+
+
+TİCARİ AMAÇ İLE KULLANILAMAZ !!!
 
 
 ![ddddd](https://github.com/user-attachments/assets/dfbc619e-3c46-477f-b49c-4c2fd8810811)
