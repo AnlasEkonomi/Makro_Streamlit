@@ -67,6 +67,9 @@ mbkurlar=st.Page("mbkurlar.py",title="MB Kur Verileri",icon="📌",
 cds=st.Page("cds.py",title="CDS Türkiye",icon="📌", 
             default=False)
 
+kredinot=st.Page("krediderece.py",title="Türkiye Kredi Notları",icon="📌", 
+            default=False)
+
 ekotakvim=st.Page("ekonomiktakvim.py",title="Ekonomi Takvimi",icon="📌", 
             default=False)
 
@@ -129,7 +132,7 @@ vix=st.Page("vix.py",title="VIX",icon="🔷",
 
 pg=st.navigation(
         {
-        "Makro Veriler":[mbapi,mbfaizler,mbkurlar,cds,ekotakvim,tüfe,
+        "Makro Veriler":[mbapi,mbfaizler,mbkurlar,cds,kredinot,ekotakvim,tüfe,
                          ctüfe,üfe,ito,issizlik,banknot,dısticaret,mbbilanco,
                          konut],
         "Finansal Veriler":[bilancolar,hissebilgi,hissefiyat,bisttreemap,yahoofiyat,
