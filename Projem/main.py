@@ -1,10 +1,13 @@
 import streamlit as st
 from datetime import datetime
 from st_social_media_links import SocialMediaIcons
+import time
+import hydralit_components as hc
+
 
 st.set_page_config(page_title="Anlaşılır Ekonomi",page_icon=':chart_with_upwards_trend:',
                    initial_sidebar_state="expanded")
-                    
+
 st.markdown("""
     <style>
     body {
@@ -39,6 +42,68 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
+
+
+hide_streamlit_style = """
+                <style>
+                div[data-testid="stToolbar"] {
+                visibility: hidden;
+                height: 0%;
+                position: fixed;
+                }
+                div[data-testid="stDecoration"] {
+                visibility: hidden;
+                height: 0%;
+                position: fixed;
+                }
+                div[data-testid="stStatusWidget"] {
+                visibility: visible;
+                height: 0%;
+                position: fixed;
+                }
+                #MainMenu {
+                visibility: hidden;
+                height: 0%;
+                }
+                header {
+                visibility: hidden;
+                height: 0%;
+                }
+                footer {
+                visibility: hidden;
+                height: 0%;
+                }
+                </style>
+                """
+st.markdown(hide_streamlit_style,unsafe_allow_html=True) 
+
+if 'snow_shown' not in st.session_state:
+    st.session_state.snow_shown=False 
+
+if not st.session_state.snow_shown:
+    with st.snow():
+        time.sleep(5) 
+    st.markdown(
+        """
+        <style>
+        .small-text {
+            font-size: 22px;  
+            font-family: 'Freestyle Script', Courier, monospace;
+            color: red;
+            text-align: center; 
+        }
+        .loader-text {
+            font-size: 34px;
+            font-family: 'Garamond', serif;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+    
+    with hc.HyLoader(f'<div class="loader-text">Hoşgeldiniz...</div> <div class="small-text">Anlaşılır Ekonomi {datetime.now().year}</div>',
+                    hc.Loaders.standard_loaders,index=5):
+        time.sleep(5) 
+    st.session_state.snow_shown=True
+
 
 st.markdown('<h1 class="title">Via Anlaşılır Ekonomi</h1>',unsafe_allow_html=True)
 tarihbugün=datetime.now().strftime('%d.%m.%Y')
@@ -85,6 +150,9 @@ ctüfe=st.Page("ctüfe.py",title="Çekirdek TÜFE Enflasyonu",icon="📌",
 ito=st.Page("ito.py",title="İTO Enflasyonu",icon="📌", 
             default=False)
 
+enfanket=st.Page("enfanket.py",title="Enflasyon Anketi",icon="📌", 
+            default=False)
+
 issizlik=st.Page("issizlik.py",title="İşsizlik",icon="📌", 
             default=False)
 
@@ -98,6 +166,9 @@ mbbilanco=st.Page("mbbilanco.py",title="MB Bilanço",icon="📌",
             default=False)
 
 konut=st.Page("konut.py",title="Konut Satış İstatistikleri",icon="📌", 
+            default=False)
+
+rezerv=st.Page("mbrezerv.py",title="MB Rezervler",icon="📌", 
             default=False)
 
 bilancolar=st.Page("bilancolar.py",title="Hisse Senedi Bilançoları",icon="🔷", 
@@ -130,13 +201,20 @@ altın=st.Page("altın.py",title="Altın",icon="🔷",
 vix=st.Page("vix.py",title="VIX",icon="🔷", 
             default=False)
 
+tpp=st.Page("tpp.py",title="TPP",icon="🔷", 
+            default=False)
+
+teminat=st.Page("teminat.py",title="Teminat Tamamlama Çağrısı",icon="🔷", 
+            default=False)
+
+
 pg=st.navigation(
         {
-        "Makro Veriler":[mbapi,mbfaizler,mbkurlar,cds,kredinot,ekotakvim,tüfe,
-                         ctüfe,üfe,ito,issizlik,banknot,dısticaret,mbbilanco,
+        "Makro Veriler":[mbapi,mbfaizler,mbkurlar,cds,kredinot,ekotakvim,rezerv,tüfe,
+                         ctüfe,üfe,ito,enfanket,issizlik,banknot,dısticaret,mbbilanco,
                          konut],
-        "Finansal Veriler":[bilancolar,hissebilgi,hissefiyat,bisttreemap,yahoofiyat,
-                            cnbc,döviz,bist,altın,vix]
+        "Finansal Veriler":[bilancolar,hissebilgi,hissefiyat,tpp,teminat,
+                            bisttreemap,yahoofiyat,cnbc,döviz,bist,altın,vix]
         })
 
 pg.run()

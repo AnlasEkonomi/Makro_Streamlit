@@ -33,7 +33,7 @@ def hissefiyat(hisse,ilk,son):
 
 st.markdown("<h4><strong>Lütfen Tarih Aralığı Seçiniz...</strong></h4>",unsafe_allow_html=True)
 tarih1=st.date_input("",format="DD-MM-YYYY",value=datetime.today().date()-timedelta(days=365),max_value=datetime.today().date(),key="Giriş")
-tarih2=st.date_input("",format="DD-MM-YYYY",value=datetime.today().date(),max_value=datetime.today().date(),key="Çıkış")
+tarih2=st.date_input("",format="DD-MM-YYYY",value=datetime.today().date(),max_value=datetime.today().date(),min_value=tarih1,key="Çıkış")
     
 st.session_state["ilk_tarih"]=tarih1.strftime("%d-%m-%Y")
 st.session_state["son_tarih"]=tarih2.strftime("%d-%m-%Y")

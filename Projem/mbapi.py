@@ -41,7 +41,6 @@ def mbapi():
         fig.update_xaxes(tickangle=-45)
         
         st.plotly_chart(fig)
-
     return veri
 
 mbapi()
