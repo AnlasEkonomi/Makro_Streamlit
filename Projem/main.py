@@ -66,7 +66,7 @@ hide_streamlit_style = """
                 height: 0%;
                 }
                 header {
-                visibility: hidden;
+                visibility: visible;
                 height: 0%;
                 }
                 footer {
@@ -138,6 +138,9 @@ kredinot=st.Page("krediderece.py",title="Türkiye Kredi Notları",icon="📌",
 ekotakvim=st.Page("ekonomiktakvim.py",title="Ekonomi Takvimi",icon="📌", 
             default=False)
 
+veritakvim=st.Page("veritakvim.py",title="Ulusal Veri Takvimi",icon="📌", 
+            default=False)
+
 tüfe=st.Page("tüfe.py",title="TÜFE Enflasyonu",icon="📌", 
             default=False)
 
@@ -165,11 +168,19 @@ dısticaret=st.Page("dısticaret.py",title="Dış Ticaret",icon="📌",
 mbbilanco=st.Page("mbbilanco.py",title="MB Bilanço",icon="📌", 
             default=False)
 
-konut=st.Page("konut.py",title="Konut Satış İstatistikleri",icon="📌", 
+konutsatıs=st.Page("konutsatıs.py",title="Konut Satış İstatistikleri",icon="📌", 
+            default=False)
+
+konutm2=st.Page("konutm2.py",title="Konut Birim Fiyatları",icon="📌", 
             default=False)
 
 rezerv=st.Page("mbrezerv.py",title="MB Rezervler",icon="📌", 
             default=False)
+
+buyume=st.Page("buyume.py",title="GSYH",icon="📌", 
+            default=False)
+
+
 
 bilancolar=st.Page("bilancolar.py",title="Hisse Senedi Bilançoları",icon="🔷", 
             default=False)
@@ -192,6 +203,9 @@ cnbc=st.Page("cnbcpro.py",title="CNBC Pro Makaleler",icon="🔷",
 döviz=st.Page("döviz.py",title="Döviz",icon="🔷", 
             default=False)
 
+brent=st.Page("brent.py",title="Brent Petrol",icon="🔷", 
+            default=False)
+
 bist=st.Page("bist.py",title="Bist",icon="🔷", 
             default=False)
 
@@ -210,11 +224,11 @@ teminat=st.Page("teminat.py",title="Teminat Tamamlama Çağrısı",icon="🔷",
 
 pg=st.navigation(
         {
-        "Makro Veriler":[mbapi,mbfaizler,mbkurlar,cds,kredinot,ekotakvim,rezerv,tüfe,
-                         ctüfe,üfe,ito,enfanket,issizlik,banknot,dısticaret,mbbilanco,
-                         konut],
+        "Makro Veriler":[mbapi,mbfaizler,mbkurlar,cds,kredinot,ekotakvim,veritakvim,
+                         rezerv,tüfe,ctüfe,üfe,ito,enfanket,issizlik,buyume,banknot,
+                         dısticaret,mbbilanco,konutsatıs,konutm2],
         "Finansal Veriler":[bilancolar,hissebilgi,hissefiyat,tpp,teminat,
-                            bisttreemap,yahoofiyat,cnbc,döviz,bist,altın,vix]
+                            bisttreemap,yahoofiyat,cnbc,döviz,brent,bist,altın,vix]
         })
 
 pg.run()

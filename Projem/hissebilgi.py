@@ -113,7 +113,7 @@ def info2(hisse,tür):
 secenek=["Pazar Endeksleri","Fiyat Performans","Piyasa Değeri","Teknik Veriler",
          "Temel Verileri","Fiyat Özeti","Finansallar","Karlılık","Çarpanlar"]
 st.markdown('<p style="font-weight:bold; color:black;">İşlem Seçiniz:</p>',unsafe_allow_html=True)
-tur_secim=st.radio("",secenek,index=None,horizontal=True)
+tur_secim=st.radio("",secenek,index=0,horizontal=True)
 
 if hisse_secim and tur_secim:
     tablo=info2(hisse_secim,tur_secim)

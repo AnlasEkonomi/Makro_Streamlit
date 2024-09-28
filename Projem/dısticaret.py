@@ -103,7 +103,7 @@ fig_total2.add_trace(go.Bar(
 fig_total2.add_trace(go.Scatter(
     x=veri3["Tarih"],y=veri3["İhracatın İthalatı Karşılama Oranı"], 
     mode="lines",name="İhracatın İthalatı Karşılama Oranı", 
-    line=dict(color="blue",width=2),yaxis="y2"))
+    line=dict(color="red",width=2),yaxis="y2"))
 
 fig_total2.update_layout(
     title=f"Hacim ve Karşılama Oranı ({secim})",
