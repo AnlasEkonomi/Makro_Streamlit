@@ -13,7 +13,7 @@ def li(ilk,son):
         soup=BeautifulSoup(response.content, "html.parser")
         li=soup.find("ul",class_="pagination flat-list lm-xs-b10").find_all("li")
         return int(li[-2].text)
-    except AttributeError:
+    except (AttributeError):
         st.error("Girdiğiniz tarih aralığında veri yoktur. Lütfen kontrol ediniz!")
     
 def vericek(sayfa,ilk,son):
@@ -41,14 +41,14 @@ def teminat(ilk,son):
         st.write("")
 
 st.markdown("<h4><strong>Lütfen Tarih Aralığı Seçiniz...</strong></h4>", unsafe_allow_html=True)
-tarih1=st.date_input("",format="DD-MM-YYYY",value=datetime.today().date()-timedelta(days=30),max_value=datetime.today().date(),key="Giriş")
+tarih1=st.date_input("",format="DD-MM-YYYY",value=datetime.today().date()-timedelta(days=32),max_value=datetime.today().date(),key="Giriş")
 tarih2=st.date_input("",format="DD-MM-YYYY",value=datetime.today().date(),max_value=datetime.today().date(),min_value=tarih1,key="Çıkış")
 
 st.session_state["ilk_tarih"]=tarih1.strftime("%Y-%m-%d")
 st.session_state["son_tarih"]=tarih2.strftime("%Y-%m-%d")
 
 veri=teminat(st.session_state["ilk_tarih"],st.session_state["son_tarih"])
-st.subheader("Teminat Tamamlama İşlem Özeti")
+st.markdown("<h4 style='font-size:20px;'>Teminat Tamamlama İşlem Özeti</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 fig=go.Figure()
@@ -58,5 +58,7 @@ fig.update_layout(
     title='Günlük Teminat Tutarları',xaxis_title="İşlem Tarihi",yaxis_title="Tutar (TL)",
     xaxis=dict(rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
 
+fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 fig.update_xaxes(tickangle=-45)
 st.plotly_chart(fig)

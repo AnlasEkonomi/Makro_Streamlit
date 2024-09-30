@@ -30,7 +30,8 @@ hisse_secim = st.selectbox('', hissead())
 
 unvan,kurulustarih,faaliyet,telefon,faks,adres,endeks=info(hisse_secim)
 
-st.markdown("<h3 style='font-size: 30px;'>Şirket Künyesi</h3>",unsafe_allow_html=True)
+
+st.markdown("<h4 style='font-size:25px;'>Şirket Künyesi</h4>",unsafe_allow_html=True)
 st.markdown("""
 <style>
 .readonly {

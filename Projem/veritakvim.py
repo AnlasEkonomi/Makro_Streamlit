@@ -29,5 +29,7 @@ st.markdown('<p style="font-weight:bold; color:black;">Yayımlanma Durumu Seçin
 secim=st.radio("", list(secenekler.keys()),index=0,horizontal=True)
 
 veri=veritakvim(secenekler[secim])
+
+st.markdown("<h4 style='font-size:20px;'>Ulusal Veri Takvimi</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,height=550,use_container_width=True,
              column_config={"Link": st.column_config.LinkColumn()})

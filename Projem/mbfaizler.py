@@ -69,6 +69,7 @@ def tlref():
     end=datetime.today().strftime("%d-%m-%Y")
     veri=evdsapi.get_data(["TP.BISTTLREF.ORAN"],startdate=start,enddate=end).dropna()
     veri.columns=["Tarih","TLREF"]
+    veri.dropna(axis=0,inplace=True)
     return veri
 
 def mevfaiz():
@@ -78,6 +79,7 @@ def mevfaiz():
     sütunad=["Tarih","1 Aya Kadar","3 Aya Kadar","6 Aya Kadar","1 Yıla Kadar","1 Yıl ve Üzeri"]
     veri=evdsapi.get_data(kodlar,startdate=start,enddate=end).drop(columns=["YEARWEEK"])
     veri.columns=sütunad
+    veri.dropna(axis=0,inplace=True)
     return veri
 
 def kredifaiz():
@@ -87,6 +89,7 @@ def kredifaiz():
     sütunad=["Tarih","İhtiyaç","Taşıt","Konut","Ticari","Tüketici (İhtiyaç+Taşıt+Konut)"]
     veri=evdsapi.get_data(kodlar,startdate=start,enddate=end).drop(columns=["YEARWEEK"])
     veri.columns=sütunad
+    veri.dropna(axis=0,inplace=True)
     return veri
 
 
@@ -120,5 +123,7 @@ if faiz_secim in veri_dict:
             xaxis_title="Tarih",yaxis_title="Faiz",
             xaxis=dict(tickformat="%d-%m-%Y", tickmode="linear",dtick="M3",
                        rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
+        fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+        fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
         fig.update_xaxes(tickangle=-45)
         st.plotly_chart(fig)

@@ -29,5 +29,5 @@ def ekonomiktakvim():
     veri.sort_values(by=["Tarih","Saat (TSİ)"],ascending=True,inplace=True)
     return veri
 
-st.markdown("### **Bu Hafta Takvimi**",unsafe_allow_html=True)
+st.markdown("<h4 style='font-size:20px;'>Bu Hafta Takvimi</h4>",unsafe_allow_html=True)
 st.dataframe(ekonomiktakvim(),hide_index=True,use_container_width=True,height=700)

@@ -42,6 +42,7 @@ elif secim=="İlk El":
 elif secim=="İkinci El":
     secilen=veriler[3]
 
+st.markdown("<h4 style='font-size:20px;'>Konut Satış İstatistkleri</h4>",unsafe_allow_html=True)
 st.dataframe(secilen,hide_index=True,use_container_width=True)
 liste=secilen.columns[1:].tolist()
 secilen["Tarih"]=pd.to_datetime(secilen["Tarih"])
@@ -59,6 +60,9 @@ if secim:
         legend_title="İller",
         xaxis=dict(tickformat="%m-%Y",dtick="M3",
                    rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
+    
+    fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+    fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
     fig.update_xaxes(tickangle=-45)
 
     st.plotly_chart(fig)

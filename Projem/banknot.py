@@ -34,6 +34,8 @@ secenek=["Aylık (Tutar)","Yıllık (Tutar)","Aylık (Adet)","Yıllık (Adet)"]
 st.markdown('<p style="font-weight:bold; color:black;">Dönem ve Tür Seçiniz:</p>',unsafe_allow_html=True)
 secim=st.radio("",secenek,index=0,horizontal=True)
 veri=banknot(secim)
+
+st.markdown("<h4 style='font-size:20px;'>Banknot Dağılımı</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 veri["Tarih"]=pd.to_datetime(veri["Tarih"],dayfirst=False,errors="coerce")
@@ -57,5 +59,9 @@ else:
 
 fig.update_layout(title=baslik,xaxis_title="Tarih",yaxis_title="",
                   xaxis=dict(rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
+
+fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 fig.update_xaxes(tickangle=-45)
-st.plotly_chart(fig, use_container_width=True)
+
+st.plotly_chart(fig)

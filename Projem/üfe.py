@@ -33,6 +33,8 @@ secenek=["Aylık","Yıllık"]
 st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',unsafe_allow_html=True)
 secim=st.radio("",secenek,index=0,horizontal=True)
 veri=üfe(secim)
+
+st.markdown("<h4 style='font-size:20px;'>ÜFE Enflasyonu</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 veri["Tarih"]=veri["Tarih"].dt.to_timestamp()
@@ -48,6 +50,10 @@ fig.update_layout(title={"text":"Üretici Enflasyonu 2003=100 (%)","x":0.5,"xanc
                     xaxis_title="Tarih",yaxis_title="Enflasyon",
                     xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M3",
                                rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
+
+fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
+
 fig.update_xaxes(tickangle=-45)
 
 son_satir=veri.tail(1).iloc[0]

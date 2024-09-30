@@ -52,6 +52,8 @@ secenek=["Günlük","Aylık","Yıllık"]
 st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',unsafe_allow_html=True)
 secim=st.radio("",secenek,index=0,horizontal=True)
 veri=bist(secim)
+
+st.markdown("<h4 style='font-size:20px;'>Bist100 Veri</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 fig=go.Figure()
@@ -78,6 +80,9 @@ fig.update_layout(title={"text":"XU100","x": 0.5,"xanchor":"center"},
                     xaxis_title="Tarih",yaxis_title="Endeks",
                     xaxis=dict(tickformat=tarih_formatı,tickmode="linear",dtick=dtick,
                                rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
+
+fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 fig.update_xaxes(tickangle=-45)
 
 if secim=="Yıllık":
@@ -99,6 +104,9 @@ fig2.update_layout(title={"text":"XU100 Getiri (%)","x":0.5,"xanchor":"center"},
                     xaxis_title="Tarih",yaxis_title="Getiri",
                     xaxis=dict(tickformat=tarih_formatı,tickmode="linear",dtick=dtick,
                                rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
+
+fig2.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig2.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 fig2.update_xaxes(tickangle=-45)
 
 st.plotly_chart(fig)

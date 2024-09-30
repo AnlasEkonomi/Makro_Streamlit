@@ -19,6 +19,8 @@ secenek=["Günlük","Aylık"]
 st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',unsafe_allow_html=True)
 secim=st.radio("",secenek,index=0,horizontal=True)
 veri=brent(secim)
+
+st.markdown("<h4 style='font-size:20px;'>Brent Petrol</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 fig=go.Figure()
@@ -30,6 +32,9 @@ fig.update_layout(title=f"Brent Petrol Fiyatları $ ({secim})",
                   yaxis_title="Fiyat ($)",
                   xaxis=dict(rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)),
                   showlegend=True)
+
+fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 fig.update_xaxes(tickangle=-45)
 
 st.plotly_chart(fig,use_container_width=True)

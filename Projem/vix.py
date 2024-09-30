@@ -21,6 +21,7 @@ st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',uns
 secim=st.radio("",secenek,index=0,horizontal=True)
 veri=vix(secim)
 
+st.markdown("<h4 style='font-size:20px;'>CBOE Volatility Index</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 tarih_formatı="%d-%m-%Y" if secim=="Günlük" else "%m-%Y"
@@ -35,5 +36,7 @@ fig.update_layout(
     xaxis=dict(tickmode="linear",dtick="M3",tickformat=tarih_formatı,
                rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
 
+fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 fig.update_xaxes(tickangle=-45)
 st.plotly_chart(fig)

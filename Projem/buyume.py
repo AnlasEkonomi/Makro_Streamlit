@@ -2,6 +2,7 @@ import evds as ev
 from datetime import datetime
 import streamlit as st
 import plotly.graph_objects as go
+import numpy as np
 
 with open("evdsapi.txt","r") as dosya:
     api=dosya.read()
@@ -79,6 +80,24 @@ def gsyhuretim(frekans):
         veri=veri[sütunlar]
         return veri
 
+def zincirgsyh(frekans):
+    start="01-01-1998"
+    end=datetime.today().strftime("%d-%m-%Y")
+    kodlar=["TP.GSYIH26.IFK.CF","TP.GSYIH26.HY.ZH"]        
+    sütunad=["Tarih","GSYH","Zincirlenmiş Hacim GSYH"] 
+    if frekans=="Çeyreklik":
+        veri=evdsapi.get_data(kodlar,startdate=start,enddate=end)
+        veri.columns=sütunad
+        veri["Büyüme"]=veri["Zincirlenmiş Hacim GSYH"].pct_change(4).apply(lambda x: f"{x*100 :.1f}%")
+        veri.replace("nan%","-",inplace=True)
+        return veri
+    elif frekans=="Yıllık":
+        veri=evdsapi.get_data(kodlar,startdate=start,enddate=end,frequency=8)
+        veri.columns=sütunad
+        veri["Büyüme"]=veri["Zincirlenmiş Hacim GSYH"].pct_change().apply(lambda x: f"{x*100 :.1f}%")
+        veri.replace("nan%","-",inplace=True)
+        return veri
+
 
 tur=st.selectbox("GSYH Hesaplama Türü:",options=["Gelir Yöntemi","Harcama Yöntemi","Üretim Yöntemi"])
 
@@ -89,14 +108,24 @@ if tur=="Gelir Yöntemi":
 
     veri=gsyhgelir(secim)
     oran=veri.copy()
+    degisim=veri.copy()
+    veri2=zincirgsyh(secim)
 
     for sütun in veri.columns[1:]:
         oran[sütun]=(veri[sütun]/veri["GSYH"]).apply(lambda x: f"{x*100 :.2f}%")
+    
+    for sütun in veri.columns[1:]:
+        degisim[sütun]=(veri[sütun].pct_change()).apply(lambda x: f"{x*100 :.2f}%")
+    degisim.iloc[0,1:]="-"
 
-    st.subheader("GSYH Tutar")
+    st.markdown("<h4 style='font-size:20px;'>GSYH Tutar</h4>",unsafe_allow_html=True)
     st.dataframe(veri,hide_index=True,use_container_width=True)
-    st.subheader("GSYH Katkı Oranları")
+    st.markdown("<h4 style='font-size:20px;'>GSYH Katkı Oranları</h4>",unsafe_allow_html=True)
     st.dataframe(oran,hide_index=True, use_container_width=True)
+    st.markdown("<h4 style='font-size:20px;'>GSYH Değişim Oranları</h4>",unsafe_allow_html=True)
+    st.dataframe(degisim,hide_index=True, use_container_width=True)
+    st.markdown("<h4 style='font-size:20px;'>GSYH Zincirleme Hacim ve Büyüme</h4>",unsafe_allow_html=True)
+    st.dataframe(veri2,hide_index=True, use_container_width=True)
 
 elif tur=="Harcama Yöntemi":
     secenek=["Çeyreklik","Yıllık"]
@@ -105,14 +134,24 @@ elif tur=="Harcama Yöntemi":
 
     veri=gsyhharcama(secim)
     oran=veri.copy()
+    degisim=veri.copy()
+    veri2=zincirgsyh(secim)
 
     for sütun in veri.columns[1:]:
         oran[sütun]=(veri[sütun]/veri["GSYH"]).apply(lambda x: f"{x*100 :.2f}%")
+    
+    for sütun in veri.columns[1:]:
+        degisim[sütun]=(veri[sütun].pct_change()).apply(lambda x: f"{x*100 :.2f}%")
+    degisim.iloc[0,1:]="-"
 
     st.subheader("GSYH Tutar")
     st.dataframe(veri,hide_index=True,use_container_width=True)
     st.subheader("GSYH Katkı Oranları")
     st.dataframe(oran,hide_index=True, use_container_width=True)
+    st.subheader("GSYH Değişim Oranları")
+    st.dataframe(degisim,hide_index=True, use_container_width=True)
+    st.subheader("GSYH Zincirleme Hacim ve Büyüme")
+    st.dataframe(veri2,hide_index=True, use_container_width=True)
 
 elif tur=="Üretim Yöntemi":
     secenek=["Çeyreklik","Yıllık"]
@@ -121,11 +160,41 @@ elif tur=="Üretim Yöntemi":
 
     veri=gsyhuretim(secim)
     oran=veri.copy()
+    degisim=veri.copy()
+    veri2=zincirgsyh(secim)
 
     for sütun in veri.columns[1:]:
         oran[sütun]=(veri[sütun]/veri["GSYH"]).apply(lambda x: f"{x*100 :.2f}%")
+
+    for sütun in veri.columns[1:]:
+        degisim[sütun]=(veri[sütun].pct_change()).apply(lambda x: f"{x*100 :.2f}%")
+    degisim.iloc[0,1:]="-"
 
     st.subheader("GSYH Tutar")
     st.dataframe(veri,hide_index=True,use_container_width=True)
     st.subheader("GSYH Katkı Oranları")
     st.dataframe(oran,hide_index=True, use_container_width=True)
+    st.subheader("GSYH Değişim Oranları")
+    st.dataframe(degisim,hide_index=True, use_container_width=True)
+    st.subheader("GSYH Zincirleme Hacim ve Büyüme")
+    st.dataframe(veri2,hide_index=True, use_container_width=True)
+
+
+veri2["Büyüme"]=veri2["Büyüme"].replace("-", np.nan)
+veri2["Büyüme"]=veri2["Büyüme"].str.rstrip('%').astype("float")
+
+renkler=["blue" if value >=0 else "red" for value in veri2["Büyüme"]]
+
+fig=go.Figure()
+fig.add_trace(go.Bar(x=veri2["Tarih"],y=veri2["Büyüme"],name="Büyüme Oranı (%)",
+    marker_color=renkler))
+
+fig.update_layout(title="GSYH Büyüme Oranı (%)",xaxis_title="Tarih",
+    yaxis_title="Büyüme Oranı (%)",xaxis=dict(type="category"),
+    template="plotly_white")
+
+fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
+fig.update_xaxes(tickangle=-45)
+
+st.plotly_chart(fig)

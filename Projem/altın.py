@@ -47,6 +47,8 @@ secenek=["Aylık","Yıllık"]
 st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',unsafe_allow_html=True)
 secim=st.radio("",secenek,index=0,horizontal=True)
 veri=altın(secim)
+
+st.markdown("<h4 style='font-size:20px;'>Altın Veri</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 tarih_formatı="%m-%Y" if secim=="Aylık" else "%Y"
@@ -61,6 +63,9 @@ fig1.update_layout(title={"text":"Ons Altın ($)","x": 0.5,"xanchor":"center"},
                     xaxis_title="Tarih", yaxis_title="Fiyat",
                     xaxis=dict(tickformat=tarih_formatı,tickmode="linear",dtick=dtick,
                                rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
+
+fig1.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig1.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 fig1.update_xaxes(tickangle=-45)
 
 fig2=go.Figure()
@@ -72,6 +77,9 @@ fig2.update_layout(title={"text":"Gram Altın (TL)","x": 0.5,"xanchor":"center"}
                     xaxis_title="Tarih", yaxis_title="Fiyat",
                     xaxis=dict(tickformat=tarih_formatı, tickmode="linear",dtick=dtick,
                                rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
+
+fig2.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig2.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 fig2.update_xaxes(tickangle=-45)
 
 if secim=="Aylık":
@@ -83,6 +91,9 @@ if secim=="Aylık":
                         xaxis_title="Tarih", yaxis_title="Getiri",
                         xaxis=dict(tickformat=tarih_formatı,tickmode="linear",dtick=dtick,
                                    rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
+    
+    fig3.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+    fig3.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
     fig3.update_xaxes(tickangle=-45)
 
     fig4=go.Figure()
@@ -93,6 +104,9 @@ if secim=="Aylık":
                         xaxis_title="Tarih", yaxis_title="Getiri",
                         xaxis=dict(tickformat=tarih_formatı,tickmode="linear",dtick=dtick,
                                    rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
+    
+    fig4.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+    fig4.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))  
     fig4.update_xaxes(tickangle=-45)
 
     st.plotly_chart(fig1)
@@ -113,6 +127,9 @@ else:
                         xaxis=dict(tickformat="%Y",tickmode="linear",dtick="M12",
                                    rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)),
                         barmode="group")
+    
+    fig3.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+    fig3.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
     fig3.update_xaxes(tickangle=-45)
 
     st.plotly_chart(fig1)

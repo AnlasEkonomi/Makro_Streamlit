@@ -42,6 +42,8 @@ secenek=["Mevsimsellikten Arındırılmamış İş Gücü 15+ Nüfus",
 st.markdown('<p style="font-weight:bold; color:black;">Veri Türü Seçiniz:</p>',unsafe_allow_html=True)
 secim=st.radio("",secenek,index=0,horizontal=True)
 veri=issizlik(secim)
+
+st.markdown("<h4 style='font-size:20px;'>İşsizlik Verileri</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 if secim=="Mevsimsellikten Arındırılmamış İş Gücü 15+ Nüfus":
@@ -62,6 +64,9 @@ if secim=="Mevsimsellikten Arındırılmamış İş Gücü 15+ Nüfus":
     xaxis=dict(tickformat="%Y-%m",tickmode="linear",
                rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)),
     yaxis=dict(tickformat="d"))
+    
+    fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+    fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
     fig.update_xaxes(tickangle=-45)
 
     fig2=go.Figure()
@@ -78,6 +83,9 @@ if secim=="Mevsimsellikten Arındırılmamış İş Gücü 15+ Nüfus":
     xaxis=dict(tickformat="%Y-%m",tickmode="linear",
                rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)),
     yaxis=dict(tickformat="d"))
+    
+    fig2.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+    fig2.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
     fig2.update_xaxes(tickangle=-45)
 
     st.plotly_chart(fig)
@@ -101,6 +109,9 @@ if secim=="Mevsimsellikten Arındırılmış İş Gücü 15+ Nüfus":
     xaxis=dict(tickformat="%Y-%m",tickmode="linear",
                rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)),
     yaxis=dict(tickformat="d"))
+    
+    fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+    fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
     fig.update_xaxes(tickangle=-45)
 
     fig2=go.Figure()
@@ -117,6 +128,9 @@ if secim=="Mevsimsellikten Arındırılmış İş Gücü 15+ Nüfus":
     xaxis=dict(tickformat="%Y-%m",tickmode="linear",
                rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)),
     yaxis=dict(tickformat="d"))
+    
+    fig2.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+    fig2.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
     fig2.update_xaxes(tickangle=-45)
 
     st.plotly_chart(fig)

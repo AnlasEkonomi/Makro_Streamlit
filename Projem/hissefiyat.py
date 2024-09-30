@@ -58,5 +58,8 @@ if "seçilen_hisse" in st.session_state:
                         xaxis_title="Tarih",yaxis_title="Fiyat",
                         xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M1",
                                    rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
+    
+    fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+    fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
     fig.update_xaxes(tickangle=-45)
     st.plotly_chart(fig)

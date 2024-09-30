@@ -24,4 +24,5 @@ def hedef_fiyat_yahoo():
     veri.reset_index(drop=True,inplace=True)
     return veri
 
+st.markdown("<h4 style='font-size:20px;'>Yahoo Hedef Fiyat</h4>",unsafe_allow_html=True)
 st.dataframe(hedef_fiyat_yahoo(),hide_index=True,use_container_width=True,width=1200,height=600)

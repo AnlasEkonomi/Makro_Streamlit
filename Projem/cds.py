@@ -32,6 +32,8 @@ def cds():
     return veri
 
 veri=cds()
+
+st.markdown("<h4 style='font-size:20px;'>CDS Türkiye</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 for col,color,title in [("CDS","Red","Türkiye CDS 5 Year"), 
@@ -47,5 +49,8 @@ for col,color,title in [("CDS","Red","Türkiye CDS 5 Year"),
                         xaxis_title="Tarih",yaxis_title=col,
                         xaxis=dict(tickformat="%d-%m-%Y",tickmode="linear",dtick="M2",
                                    rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
+    fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+    fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
+    
     fig.update_xaxes(tickangle=-45)
     st.plotly_chart(fig)

@@ -27,6 +27,8 @@ def mbbilanco():
     return veri
 
 veri=mbbilanco()
+
+st.markdown("<h4 style='font-size:20px;'>MB Bilanço</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 fig=go.Figure()
@@ -35,6 +37,9 @@ fig.update_layout(title={"text":"MB Aktif Büyüklüğü","x":0.5,"xanchor":"cen
                     xaxis_title="Tarih", yaxis_title="Aktif",
                     xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M6",
                                rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
+
+fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 fig.update_xaxes(tickangle=-45)
 st.plotly_chart(fig)
 
@@ -52,5 +57,7 @@ fig2.update_layout(title={"text":"MB Bilanço Rasyoları","x":0.5,"xanchor":"cen
                   xaxis_title="Tarih",yaxis_title="Oran",
                   xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M6",
                              rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
+fig2.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig2.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 fig2.update_xaxes(tickangle=-45)
 st.plotly_chart(fig2)

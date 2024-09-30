@@ -19,7 +19,7 @@ def enfanket():
     return veri
 
 veri=enfanket()
-st.header("12 Ay Sonrası Yıllık Enflasyon Beklentisi")
+st.markdown("<h4 style='font-size:20px;'>12 Ay Sonrası Yıllık Enflasyon Beklentisi</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 veri["Tarih"]=pd.to_datetime(veri["Tarih"],format="%Y-%m")
 
@@ -31,6 +31,9 @@ for sütun in veri.columns[1:]:
 fig.update_layout(xaxis_title="Tarih",yaxis_title="Enflasyon",
                   xaxis=dict(tickformat="%m-%Y",dtick="M1",
                 rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
+
+fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 fig.update_xaxes(tickangle=-45)
 
 st.plotly_chart(fig,use_container_width=True)

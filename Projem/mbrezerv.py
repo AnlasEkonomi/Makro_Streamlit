@@ -29,6 +29,8 @@ secenek=["Aylık","Yıllık"]
 st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',unsafe_allow_html=True)
 secim=st.radio("",secenek,index=0,horizontal=True)
 veri=rezerv(secim)
+
+st.markdown("<h4 style='font-size:20px;'>MB Rezervler</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 tarih_formatı="%m-%Y" if secim=="Aylık" else "%Y"
@@ -44,6 +46,9 @@ for sütun in veri.columns[1:]:
 fig.update_layout(title="Rezervler",xaxis_title="Tarih",yaxis_title="Milyon ABD $",
                   xaxis=dict(tickformat=tarih_formatı,dtick=dtick,
                              rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
+
+fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 
 fig.update_xaxes(tickangle=-45)
 st.plotly_chart(fig,use_container_width=True)

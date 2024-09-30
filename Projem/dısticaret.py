@@ -49,13 +49,13 @@ st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',uns
 secim=st.radio("",secenek,index=0,horizontal=True)
 veri1,veri2,veri3=dısticaret(secim)
 
-st.subheader("İhracat Verileri")
+st.markdown("<h4 style='font-size:20px;'>İhracat Verileri</h4>",unsafe_allow_html=True)
 st.dataframe(veri1,hide_index=True,use_container_width=True)
 
-st.subheader("İthalat Verileri")
+st.markdown("<h4 style='font-size:20px;'>İthalat Verileri</h4>",unsafe_allow_html=True)
 st.dataframe(veri2,hide_index=True,use_container_width=True)
 
-st.subheader("Dış Ticaret Dengesi")
+st.markdown("<h4 style='font-size:20px;'>Dış Ticaret Dengesi</h4>",unsafe_allow_html=True)
 st.dataframe(veri3,hide_index=True,use_container_width=True)
 
 fig_total=go.Figure()
@@ -84,6 +84,9 @@ if "Yıllık" in secim:
     fig_total.update_xaxes(dtick="M12",tickformat="%Y")
 else:
     fig_total.update_xaxes(dtick="M3",tickformat="%m-%Y")
+
+fig_total.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig_total.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 
 st.plotly_chart(fig_total,use_container_width=True)
 
@@ -118,6 +121,9 @@ if "Yıllık" in secim:
 else:
     fig_total2.update_xaxes(dtick="M3", tickformat="%m-%Y")
 
+fig_total2.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig_total2.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
+
 st.plotly_chart(fig_total2, use_container_width=True)
 
 
@@ -135,6 +141,9 @@ if "Yıllık" in secim:
 else:
     fig_ihracat.update_xaxes(dtick="M3",tickformat="%m-%Y")
 
+fig_ihracat.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig_ihracat.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
+
 st.plotly_chart(fig_ihracat,use_container_width=True)
 
 fig_ithalat=go.Figure()
@@ -148,5 +157,8 @@ if "Yıllık" in secim:
     fig_ithalat.update_xaxes(dtick="M12",tickformat="%Y")
 else:
     fig_ithalat.update_xaxes(dtick="M3",tickformat="%m-%Y")
+
+fig_ithalat.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig_ithalat.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 
 st.plotly_chart(fig_ithalat,use_container_width=True)

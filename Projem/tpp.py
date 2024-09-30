@@ -47,5 +47,5 @@ st.session_state["ilk_tarih"]=tarih1.strftime("%Y-%m-%d")
 st.session_state["son_tarih"]=tarih2.strftime("%Y-%m-%d")
 
 veri=tpp(st.session_state["ilk_tarih"],st.session_state["son_tarih"])
-st.subheader("TPP İşlem Özeti")
+st.markdown("<h4 style='font-size:20px;'>TPP İşlem Özeti</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)

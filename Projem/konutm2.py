@@ -43,6 +43,7 @@ def get_veri(konut_data):
 
 veriler=[get_veri(konut_data) for konut_data in konutveri][0]
 
+st.markdown("<h4 style='font-size:20px;'>Konut Birim Fiyatları</h4>",unsafe_allow_html=True)
 st.dataframe(veriler,hide_index=True,use_container_width=True)
 
 liste=veriler.columns[1:].tolist()
@@ -67,6 +68,9 @@ if secim:
         title=f"{secim}",xaxis_title="Tarih",yaxis_title="TL",legend_title="İller",
         xaxis=dict(tickformat=tickformat,dtick=dtick,
             rangeslider=dict(visible=True,bgcolor="white",bordercolor="black",borderwidth=2)))
+    
+    fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+    fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
     fig.update_xaxes(tickangle=-45)
 
     st.plotly_chart(fig)
