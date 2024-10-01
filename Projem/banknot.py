@@ -60,7 +60,7 @@ else:
 fig.update_layout(title=baslik,xaxis_title="Tarih",yaxis_title="",
                   xaxis=dict(rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
 
-fig.update_xaxes(tickangle=-45,tickfont=dict(color="black",size=8,family="Arial Black"))
+fig.update_xaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 fig.update_yaxes(tickfont=dict(color="black",size=8,family="Arial Black"))
 fig.update_xaxes(tickangle=-45)
 

@@ -183,6 +183,9 @@ buyume=st.Page("buyume.py",title="GSYH",icon="📌",
 osd=st.Page("osd.py",title="OSD",icon="📌", 
             default=False)
 
+kko=st.Page("kko.py",title="Kapasite Kullanım Oranı",icon="📌", 
+            default=False)
+
 bilancolar=st.Page("bilancolar.py",title="Hisse Senedi Bilançoları",icon="🔷", 
             default=False)
 
@@ -225,13 +228,17 @@ teminat=st.Page("teminat.py",title="Teminat Tamamlama Çağrısı",icon="🔷",
 akaryakıt=st.Page("akaryakıt.py",title="Akaryakıt Fiyatları",icon="🔷", 
             default=False)
 
+haber=st.Page("haber.py",title="Haber Akışı",icon="🔷", 
+            default=False)
+
 
 pg=st.navigation(
         {
         "Makro Veriler":[mbapi,mbfaizler,mbkurlar,cds,kredinot,ekotakvim,veritakvim,
-                         rezerv,tüfe,ctüfe,üfe,ito,enfanket,issizlik,buyume,banknot,
-                         dısticaret,mbbilanco,konutsatıs,konutm2,osd],
-        "Finansal Veriler":[bilancolar,hissebilgi,hissefiyat,akaryakıt,tpp,teminat,
+                         rezerv,tüfe,ctüfe,üfe,ito,enfanket,issizlik,buyume,kko,
+                         banknot,dısticaret,mbbilanco,konutsatıs,konutm2,osd],
+        
+        "Finansal Veriler":[haber,bilancolar,hissebilgi,hissefiyat,akaryakıt,tpp,teminat,
                             bisttreemap,yahoofiyat,cnbc,döviz,brent,bist,altın,vix]
         })
 
