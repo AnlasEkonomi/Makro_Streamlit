@@ -16,7 +16,7 @@ def hedef_fiyat_yahoo():
         return hissekod
     hisse=Ticker(hisseler())
     hisse_dict=hisse.financial_data
-    veri=pd.DataFrame.from_dict(hisse_dict,orient="index").iloc[:,1:6].reset_index()
+    veri=pd.DataFrame.from_dict(hisse_dict).T.reset_index().iloc[:,[0,2,24,25,26,27]]
     veri.columns=["Hisse Adı","Güncel Fiyat","En Yüksek Tahmin","En Düşük Tahmin",
             "Ortalama Tahmin","Medyan Tahmin"]
     veri["Hisse Adı"]=veri["Hisse Adı"].str.replace(".IS","",regex=False)

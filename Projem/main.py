@@ -186,6 +186,9 @@ osd=st.Page("osd.py",title="OSD",icon="📌",
 kko=st.Page("kko.py",title="Kapasite Kullanım Oranı",icon="📌", 
             default=False)
 
+demografik=st.Page("demografik.py",title="Nüfus ve Demografi",icon="📌", 
+            default=False)
+
 bilancolar=st.Page("bilancolar.py",title="Hisse Senedi Bilançoları",icon="🔷", 
             default=False)
 
@@ -213,6 +216,9 @@ brent=st.Page("brent.py",title="Brent Petrol",icon="🔷",
 bist=st.Page("bist.py",title="Bist",icon="🔷", 
             default=False)
 
+ulusborsa=st.Page("ulusborsa.py",title="Dünya Borsaları",icon="🔷", 
+            default=False)
+
 altın=st.Page("altın.py",title="Altın",icon="🔷", 
             default=False)
 
@@ -235,11 +241,12 @@ haber=st.Page("haber.py",title="Haber Akışı",icon="🔷",
 pg=st.navigation(
         {
         "Makro Veriler":[mbapi,mbfaizler,mbkurlar,cds,kredinot,ekotakvim,veritakvim,
-                         rezerv,tüfe,ctüfe,üfe,ito,enfanket,issizlik,buyume,kko,
-                         banknot,dısticaret,mbbilanco,konutsatıs,konutm2,osd],
+                         rezerv,tüfe,ctüfe,üfe,ito,enfanket,issizlik,buyume,demografik,
+                         kko,banknot,dısticaret,mbbilanco,konutsatıs,konutm2,osd],
         
         "Finansal Veriler":[haber,bilancolar,hissebilgi,hissefiyat,akaryakıt,tpp,teminat,
-                            bisttreemap,yahoofiyat,cnbc,döviz,brent,bist,altın,vix]
+                            bisttreemap,yahoofiyat,cnbc,döviz,brent,bist,ulusborsa,
+                            altın,vix]
         })
 
 pg.run()
