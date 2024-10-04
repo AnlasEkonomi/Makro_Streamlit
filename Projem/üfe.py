@@ -34,7 +34,7 @@ st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',uns
 secim=st.radio("",secenek,index=0,horizontal=True)
 veri=üfe(secim)
 
-st.markdown("<h4 style='font-size:20px;'>ÜFE Enflasyonu</h4>",unsafe_allow_html=True)
+st.markdown(f"<h4 style='font-size:20px;'>ÜFE Enflasyonu ({secim})</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 veri["Tarih"]=veri["Tarih"].dt.to_timestamp()
@@ -46,7 +46,7 @@ fig=go.Figure()
 for col,color in zip(columns,renkler):
     fig.add_trace(go.Scatter(x=veri["Tarih"],y=veri[col],mode="lines",name=col,line=dict(color=color)))
 
-fig.update_layout(title={"text":"Üretici Enflasyonu 2003=100 (%)","x":0.5,"xanchor":"center"},
+fig.update_layout(title={"text":f"Üretici Enflasyonu 2003=100 (%) ({secim})","x":0.5,"xanchor":"center"},
                     xaxis_title="Tarih",yaxis_title="Enflasyon",
                     xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M3",
                                rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
@@ -65,7 +65,7 @@ fig2=go.Figure()
 fig2.add_trace(go.Bar(x=sıralı_deger,y=sıralı_sütun,marker_color=sıralı_renkler,
                         orientation="h",text=sıralı_deger,textposition="outside"))
 
-fig2.update_layout(title={"text":"ÜFE 2003=100 (%)","x": 0.5,"xanchor":"center"},
+fig2.update_layout(title={"text":f"ÜFE 2003=100 (%) ({secim})","x": 0.5,"xanchor":"center"},
                     xaxis_title="Enflasyon",yaxis_title="Kategori",xaxis=dict(tickangle=-45))
 
 st.plotly_chart(fig)

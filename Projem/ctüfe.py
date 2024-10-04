@@ -38,7 +38,7 @@ st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',uns
 secim=st.radio("",secenek,index=0,horizontal=True)
 veri=ctüfe(secim)
 
-st.markdown("<h4 style='font-size:20px;'>Çekirdek TÜFE Enflasyonu</h4>",unsafe_allow_html=True)
+st.markdown(f"<h4 style='font-size:20px;'>Çekirdek TÜFE Enflasyonu ({secim})</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 veri["Tarih"]=veri["Tarih"].dt.to_timestamp()
@@ -56,7 +56,7 @@ for col,color in zip(columns,renkler):
                                 name=col,line=dict(color=color)))
 
 fig.update_layout(
-    title={"text":"Çekirdek Enflasyon 2003=100 (%)","x":0.5,"xanchor":"center"},
+    title={"text":f"Çekirdek Enflasyon 2003=100 (%) ({secim})","x":0.5,"xanchor":"center"},
     xaxis_title="Tarih",yaxis_title="Enflasyon",
     xaxis=dict(tickformat="%m-%Y",tickmode="linear",dtick="M3",
                rangeslider=dict(visible=True,bgcolor="white",bordercolor="red",borderwidth=2)))
@@ -75,7 +75,7 @@ fig2.add_trace(go.Bar(x=sıralı_deger,y=sıralı_sütun,marker_color=sıralı_r
     orientation="h", text=sıralı_deger, textposition="outside"))
 
 fig2.update_layout(
-    title={"text":"Çekirdek TÜFE 2003=100 (%)","x":0.5,"xanchor":"center"},
+    title={"text":f"Çekirdek TÜFE 2003=100 (%) ({secim})","x":0.5,"xanchor":"center"},
     xaxis_title="Enflasyon",yaxis_title="Kategori",xaxis=dict(tickangle=-45))
 
 st.plotly_chart(fig)

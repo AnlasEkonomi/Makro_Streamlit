@@ -33,7 +33,7 @@ st.markdown('<p style="font-weight:bold; color:black;">Dönem Seçiniz:</p>',uns
 secim=st.radio("",secenek,index=0,horizontal=True)
 veri=osd(secim)
 
-st.markdown("<h4 style='font-size:20px;'>OSD Üretim İstatistikleri</h4>",unsafe_allow_html=True)
+st.markdown(f"<h4 style='font-size:20px;'>OSD Üretim İstatistikleri ({secim})</h4>",unsafe_allow_html=True)
 st.dataframe(veri,hide_index=True,use_container_width=True)
 
 fig=go.Figure()
