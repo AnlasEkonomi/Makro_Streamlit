@@ -18,7 +18,8 @@ Proje geliştikçe kodlar zamanla güncellenecektir. Tamamen eğitim amaçlı ol
 TİCARİ AMAÇ İÇİN KULLANILAMAZ !!!
 
 
-![ddddd](https://github.com/user-attachments/assets/dfbc619e-3c46-477f-b49c-4c2fd8810811)
+![22](https://github.com/user-attachments/assets/0646c903-4e29-4541-b3f2-4db373ec51cb)
+
 
 
 
