@@ -80,8 +80,9 @@ def swap():
         istenmeyen=veri.loc[[39,40],"Valör Tarihi"].tolist()
         veri=veri[~veri["Valör Tarihi"].isin(istenmeyen)]
         veri.reset_index(drop=True,inplace=True)
-        veri["Valör Tarihi"]=pd.to_datetime(veri["Valör Tarihi"],format="%d.%m.%Y")
+        veri["Valör Tarihi"]=pd.to_datetime(veri["Valör Tarihi"],format="%d.%m.%Y",dayfirst=True, errors="coerce")
         veri["Valör Tarihi"]=veri["Valör Tarihi"].dt.strftime("%d-%m-%Y")
+        veri=veri.dropna(subset=["Valör Tarihi"]).reset_index(drop=True)
 
         for i in veri.columns[1:]:
             veri[i]=veri[i].apply(lambda x: x.replace('.', '').replace(',', '.') if x != '-' else x)
@@ -92,7 +93,7 @@ def swap():
         st.warning("Sunucuya ulaşılamadı. Lütfen tekrar deneyiniz...")
 
 def mbkur():
-    tarih=pd.to_datetime(swap()["Valör Tarihi"],format="%d-%m-%Y")
+    tarih=pd.to_datetime(swap()["Valör Tarihi"],format="%d-%m-%Y",dayfirst=True,errors="coerce")
     start=tarih[0].strftime("%d-%m-%Y")
     end=tarih.iloc[-1].strftime("%d-%m-%Y")
     veri=evdsapi.get_data(["TP.DK.USD.A.YTL"],startdate=start,enddate=end)
