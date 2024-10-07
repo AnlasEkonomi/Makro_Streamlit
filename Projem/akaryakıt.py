@@ -154,7 +154,7 @@ if secim=="Opet":
         ilce_df["name"]=ilce_df["name"].str.capitalize()
         ilce=st.selectbox("İlçe Seçiniz:",options=ilce_df["name"])
         ilcekod=ilce_df.loc[ilce_df["name"]==ilce,"code"].values[0]
-        fiyat=opetfiyat(ilcekod,st.session_state["ilk_tarih"],st.session_state["son_tarih"])
+        
         
         st.markdown("<h4><strong>Lütfen Tarih Aralığı Seçiniz...</strong></h4>",unsafe_allow_html=True)
         tarih1=st.date_input("",format="DD-MM-YYYY",value=datetime.today().date()-timedelta(days=32),max_value=datetime.today().date()-timedelta(days=1),key="Giriş")
@@ -162,6 +162,7 @@ if secim=="Opet":
         
         st.session_state["ilk_tarih"]=tarih1.strftime("%Y-%m-%d")
         st.session_state["son_tarih"]=tarih2.strftime("%Y-%m-%d")
+        fiyat=opetfiyat(ilcekod,st.session_state["ilk_tarih"],st.session_state["son_tarih"])
 
         st.markdown(f"<h4 style='font-size:20px;'>{secim} Ürün Fiyat Arşivi ({str(il).capitalize()}-{str(ilce).capitalize()}) </h4>",unsafe_allow_html=True)
         st.dataframe(fiyat,hide_index=True,use_container_width=True)
@@ -190,7 +191,7 @@ if secim=="Petrol Ofisi":
         ilce_df["İlçe"]=ilce_df["İlçe"].str.capitalize()
         ilce=st.selectbox("İlçe Seçiniz:",options=ilce_df["İlçe"])
         ilcekod=ilce_df.loc[ilce_df["İlçe"]==ilce,"Kod"].values[0]
-        fiyat=pofiyat(ilcekod,st.session_state["ilk_tarih"],st.session_state["son_tarih"])
+       
 
         st.markdown("<h4><strong>Lütfen Tarih Aralığı Seçiniz...</strong></h4>",unsafe_allow_html=True)
         tarih1=st.date_input("",format="DD-MM-YYYY",value=datetime.today().date()-timedelta(days=32),max_value=datetime.today().date()-timedelta(days=1),key="Giriş")
@@ -198,6 +199,7 @@ if secim=="Petrol Ofisi":
         
         st.session_state["ilk_tarih"]=tarih1.strftime("%d-%m-%Y")
         st.session_state["son_tarih"]=tarih2.strftime("%d-%m-%Y")
+        fiyat=pofiyat(ilcekod,st.session_state["ilk_tarih"],st.session_state["son_tarih"])
 
         st.markdown(f"<h4 style='font-size:20px;'>{secim} Ürün Fiyat Arşivi ({str(il).capitalize()}-{str(ilce).capitalize()}) </h4>",unsafe_allow_html=True)
         st.dataframe(fiyat,hide_index=True,use_container_width=True)
@@ -227,7 +229,7 @@ if secim=="TP":
         ilce_df["İlçe"]=ilce_df["İlçe"].str.capitalize()
         ilce=st.selectbox("İlçe Seçiniz:",options=ilce_df["İlçe"])
         ilcekod=ilce_df.loc[ilce_df["İlçe"]==ilce,"Kod"].values[0]
-        fiyat=tpfiyat(ilkod,ilcekod,st.session_state["ilk_tarih"],st.session_state["son_tarih"])
+        
         
         st.markdown("<h4><strong>Lütfen Tarih Aralığı Seçiniz...</strong></h4>",unsafe_allow_html=True)
         tarih1=st.date_input("",format="DD-MM-YYYY",value=datetime.today().date()-timedelta(days=32),max_value=datetime.today().date()-timedelta(days=1),key="Giriş")
@@ -235,6 +237,7 @@ if secim=="TP":
         
         st.session_state["ilk_tarih"]=tarih1.strftime("%d.%m.%Y")
         st.session_state["son_tarih"]=tarih2.strftime("%d.%m.%Y")
+        fiyat=tpfiyat(ilkod,ilcekod,st.session_state["ilk_tarih"],st.session_state["son_tarih"])
 
         st.markdown(f"<h4 style='font-size:20px;'>{secim} Ürün Fiyat Arşivi ({str(il).capitalize()}-{str(ilce).capitalize()}) </h4>",unsafe_allow_html=True)
         st.dataframe(fiyat,hide_index=True,use_container_width=True)

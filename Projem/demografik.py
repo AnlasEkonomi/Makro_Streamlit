@@ -140,6 +140,41 @@ def dogyeriyabancunufus():
     
     return veri
 
+def egitim(il):
+    url="https://nip.tuik.gov.tr/Home/EgitimDurumForTable?"
+
+    yuk={"draw": 1,
+    "start": 0,
+    "length": 20000,
+    "search[regex]": "false",
+    "ilAdi": str(il)}
+
+    req=requests.post(url,data=yuk).json()["data"]
+    veri=pd.DataFrame(req)
+    veri.drop(columns=["IlKodu","Id","CreatedDate","CreatedUserId","IsUpdated",
+                   "UpdatedDate","UpdatedUserId","IsDeleted"],inplace=True)
+    veri.columns=["Yıl","İl","Eğitim Durumu (6+ Yaş)","Toplam","Erkek","Kadın",
+              "Erkek Oran","Kadın Oran"]
+    veri["Yıl"]=veri["Yıl"].astype(int).apply(lambda x: f"{x:,}".replace(",", ""))
+    veri.sort_values(by="Yıl",inplace=True)
+    yılliste=list(veri["Yıl"].unique())
+    return veri, yılliste
+
+def medenidurum(il):
+    url="https://nip.tuik.gov.tr/Home/GetInformation"
+
+    yuk={"status":"1",
+        "name":"MedeniDurum",
+        "value":str(il)}
+    
+    req=requests.post(url,data=yuk)
+    html=StringIO(req.text)
+    veri=pd.read_html(html,decimal=",",thousands=".")[0]
+    veri["Yıl"]=veri["Yıl"].astype(int).apply(lambda x: f"{x:,}".replace(",", ""))
+    veri.sort_values(by="Yıl",inplace=True)
+    yılliste=list(veri["Yıl"].unique())
+    return veri,yılliste
+
 
 iller=list(ilduzey()["ad"])
 locale.setlocale(locale.LC_COLLATE,"tr_TR.UTF-8")
@@ -150,6 +185,10 @@ iller.insert(0,"TÜRKİYE")
 iller2=iller.copy()
 iller2.remove("TÜRKİYE")
 iller2.append("BILINMEYEN")
+iller3=iller.copy()
+iller3.remove("TÜRKİYE")
+iller3.insert(0,"Hepsi")
+
 
 
 st.markdown("<h4 style='font-size:20px;'>Nüfus Verileri</h4>",unsafe_allow_html=True)
@@ -337,3 +376,97 @@ with st.expander("Doğum Yeri ve İkametine Göre Nüfus"):
 
 st.markdown("<h4 style='font-size:20px;'>Eğitim ve Medeni Durum Verileri</h4>",unsafe_allow_html=True)
 
+with st.expander("Eğitim Durum"):
+    secim=st.selectbox(label="İl Seçiniz:",options=iller3,key="egitim")
+    veri8=egitim(str(secim))[0]
+    veri8yıl=egitim(str(secim))[1]
+    secim2=st.selectbox(label="Yıl Seçiniz:",options=veri8yıl,key="egitimyıl")
+    veri8filtre=veri8[veri8["Yıl"]==secim2]
+    st.dataframe(veri8filtre,hide_index=True,use_container_width=True)
+
+    fig=go.Figure()
+    veri8filtre=veri8filtre[veri8filtre["Eğitim Durumu (6+ Yaş)"] !="TOPLAM"]
+
+
+    fig.add_trace(go.Pie(
+        labels=veri8filtre["Eğitim Durumu (6+ Yaş)"],values=veri8filtre["Toplam"],
+        title=f"Eğitim Durumuna Göre Toplam ({str(secim).capitalize()})",domain=dict(x=[0,1],y=[0,1]),name="Toplam",
+        hoverinfo="label+value",textinfo="none"))
+
+    fig.add_trace(go.Pie(
+        labels=veri8filtre["Eğitim Durumu (6+ Yaş)"],values=veri8filtre["Erkek"],
+        title=f"Eğitim Durumuna Göre Erkek ({str(secim).capitalize()})",domain=dict(x=[0,1],y=[0,1]),
+        visible=False,hoverinfo="label+value",textinfo="none"))
+
+    fig.add_trace(go.Pie(
+        labels=veri8filtre["Eğitim Durumu (6+ Yaş)"],values=veri8filtre["Kadın"],
+        title=f"Eğitim Durumuna Göre Kadın Dağılım ({str(secim).capitalize()})",domain=dict(x=[0,1],y=[0,1]),
+        visible=False,name="Kadın",hoverinfo="label+value",textinfo="none"))
+
+    fig.update_layout(
+        updatemenus=[
+            dict(type="buttons",direction="down",
+                buttons=list([
+                    dict(args=[{"visible":[True,False,False]}],
+                        label="Toplam",method="update"),
+                    dict(args=[{"visible":[False,True,False]}],
+                        label="Erkek",method="update"),
+                    dict(args=[{"visible":[False,False,True]}],
+                        label="Kadın",method="update")]),
+                showactive=True,x=0.17,y=1.2)])
+    st.plotly_chart(fig)
+
+with st.expander("Medeni Durum"):
+    secim=st.selectbox(label="İl Seçiniz:",options=iller3,key="medeni")
+    veri9=medenidurum(str(secim))[0]
+    veri9yıl=medenidurum(str(secim))[1]
+    st.dataframe(veri9,hide_index=True,use_container_width=True)
+    
+    secim2=st.selectbox(label="Yıl Seçiniz:",options=veri8yıl,key="medeniyıl")
+    secim3=st.selectbox(label="Cinsiyet Seçiniz:",options=["Toplam","Erkek","Kadın"],key="medeniyılcins")
+    veri9filtre=veri9[veri9["Yıl"]==secim2]
+    
+    if secim3=="Toplam":
+        sütun=["Hiç Evlenmedi Toplam","Evli Toplam","Boşandı Toplam",
+               "Eşi Öldü Toplam","Bilinmeyen Toplam"]
+        
+        values=veri9filtre[sütun].sum().values
+        fig=go.Figure(data=[go.Pie(labels=sütun,values=values,hoverinfo="label+value",
+                                   textinfo="none")])
+    
+        fig.update_layout(
+            title={
+                'text':f"Eğitim Durumuna Göre Toplam ({str(secim).capitalize()}-{secim2})",
+                'font':{'size': 15,'color':'black','family':'Arial','weight':'bold'}})
+        
+        st.plotly_chart(fig)
+    
+    elif secim3=="Erkek":
+        sütun=["Hiç Evlenmedi Erkek","Evli Erkek","Boşandı Erkek",
+               "Eşi Öldü Erkek","Bilinmeyen Erkek"]
+        
+        values=veri9filtre[sütun].sum().values
+        fig=go.Figure(data=[go.Pie(labels=sütun,values=values,hoverinfo="label+value",
+                                   textinfo="none")])
+    
+        fig.update_layout(
+            title={
+                'text':f"Eğitim Durumuna Göre Erkek ({str(secim).capitalize()}-{secim2})",
+                'font':{'size': 15,'color':'black','family':'Arial','weight':'bold'}})
+        
+        st.plotly_chart(fig)
+    
+    elif secim3=="Kadın":
+        sütun=["Hiç Evlenmedi Kadın","Evli Kadın","Boşandı Kadın",
+               "Eşi Öldü Kadın","Bilinmeyen Kadın"]
+        
+        values=veri9filtre[sütun].sum().values
+        fig=go.Figure(data=[go.Pie(labels=sütun,values=values,hoverinfo="label+value",
+                                   textinfo="none")])
+    
+        fig.update_layout(
+            title={
+                'text':f"Eğitim Durumuna Göre Kadın ({str(secim).capitalize()}-{secim2})",
+                'font':{'size': 15,'color':'black','family':'Arial','weight':'bold'}})
+        
+        st.plotly_chart(fig)

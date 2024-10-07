@@ -120,7 +120,7 @@ iletisim_links=[
 iletisim=SocialMediaIcons(iletisim_links)
 iletisim.render(sidebar=True,justify_content="start")
 
-mbapi=st.Page("mbapi.py",title="MB Api Fonlama",icon="📌", 
+mbfonlama=st.Page("mbfonlama.py",title="MB Fonlama",icon="📌", 
             default=False)
 
 mbfaizler=st.Page("mbfaizler.py",title="MB Faizleri",icon="📌", 
@@ -186,7 +186,7 @@ osd=st.Page("osd.py",title="OSD",icon="📌",
 kko=st.Page("kko.py",title="Kapasite Kullanım Oranı",icon="📌", 
             default=False)
 
-demografik=st.Page("demografik.py",title="Nüfus ve Demografi",icon="📌", 
+demografik=st.Page("demografik.py",title="Nüfus ve Eğitim",icon="📌", 
             default=False)
 
 bilancolar=st.Page("bilancolar.py",title="Hisse Senedi Bilançoları",icon="🔷", 
@@ -240,7 +240,7 @@ haber=st.Page("haber.py",title="Haber Akışı",icon="🔷",
 
 pg=st.navigation(
         {
-        "Makro Veriler":[mbapi,mbfaizler,mbkurlar,cds,kredinot,ekotakvim,veritakvim,
+        "Makro Veriler":[mbfonlama,mbfaizler,mbkurlar,cds,kredinot,ekotakvim,veritakvim,
                          rezerv,tüfe,ctüfe,üfe,ito,enfanket,issizlik,buyume,demografik,
                          kko,banknot,dısticaret,mbbilanco,konutsatıs,konutm2,osd],
         
