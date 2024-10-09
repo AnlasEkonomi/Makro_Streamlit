@@ -213,7 +213,7 @@ döviz=st.Page("döviz.py",title="Döviz",icon="🔷",
 brent=st.Page("brent.py",title="Brent Petrol",icon="🔷", 
             default=False)
 
-bist=st.Page("bist.py",title="Bist",icon="🔷", 
+bist=st.Page("bist.py",title="Bist100",icon="🔷", 
             default=False)
 
 ulusborsa=st.Page("ulusborsa.py",title="Dünya Borsaları",icon="🔷", 

@@ -85,7 +85,7 @@ def swap():
         veri=veri.dropna(subset=["Valör Tarihi"]).reset_index(drop=True)
 
         for i in veri.columns[1:]:
-            veri[i]=veri[i].apply(lambda x: x.replace('.', '').replace(',', '.') if x != '-' else x)
+            veri[i]=veri[i].apply(lambda x: x.replace(',', '').replace('.', ',') if x != '-' else x)
             veri[i]=pd.to_numeric(veri[i],errors="coerce")
         veri.fillna(0,inplace=True)
         return veri
@@ -93,13 +93,16 @@ def swap():
         st.warning("Sunucuya ulaşılamadı. Lütfen tekrar deneyiniz...")
 
 def mbkur():
-    tarih=pd.to_datetime(swap()["Valör Tarihi"],format="%d-%m-%Y",dayfirst=True,errors="coerce")
-    start=tarih[0].strftime("%d-%m-%Y")
-    end=tarih.iloc[-1].strftime("%d-%m-%Y")
-    veri=evdsapi.get_data(["TP.DK.USD.A.YTL"],startdate=start,enddate=end)
-    veri.columns=["Tarih","DolarTL Alış"]
-    veri.dropna(axis=0,inplace=True)
-    return veri
+    try:
+        tarih=pd.to_datetime(swap()["Valör Tarihi"],format="%d-%m-%Y",dayfirst=True,errors="coerce")
+        start=tarih[0].strftime("%d-%m-%Y")
+        end=tarih.iloc[-1].strftime("%d-%m-%Y")
+        veri=evdsapi.get_data(["TP.DK.USD.A.YTL"],startdate=start,enddate=end)
+        veri.columns=["Tarih","DolarTL Alış"]
+        veri.dropna(axis=0,inplace=True)
+        return veri
+    except ReadTimeout:
+        st.warning("Sunucuya ulaşılamadı. Lütfen tekrar deneyiniz...")
 
 
 st.markdown("<h4 style='font-size:20px;'>TCMB APİ Fonlama Yapısı (Milyon TL)</h4>",unsafe_allow_html=True)
@@ -126,7 +129,7 @@ fig.add_trace(go.Scatter(x=pd.to_datetime(veri["Tarih"],format="%d-%m-%Y"),
 
 fig.add_trace(go.Scatter(x=pd.to_datetime(tswap["Tarih"],format="%d-%m-%Y"),
                              y=tswap["TL Değer"],mode="lines",line=dict(color="blue"),
-                             name="Swap Fonlama (TL)"))
+                             name="Swap Fonlama"))
 
 fig.update_layout(title={"text":"Net Fonlama (Api-Swap)","x": 0.5,"xanchor":"center"},
                 xaxis_title="Tarih",yaxis_title="Milyon TL",
