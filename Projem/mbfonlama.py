@@ -86,8 +86,6 @@ def swap():
 
         for i in veri.columns[1:]:
             veri[i]=veri[i].apply(lambda x: x.replace(',', '').replace('.', ',') if x != '-' else x)
-            veri[i]=pd.to_numeric(veri[i],errors="coerce")
-        veri.fillna(0,inplace=True)
         return veri
     except ReadTimeout:
         st.warning("Sunucuya ulaşılamadı. Lütfen tekrar deneyiniz...")
@@ -118,7 +116,14 @@ st.markdown("<h4 style='font-size:20px;'>TCMB Swap Fonlama Yapısı (Milyon $)</
 st.dataframe(veri3,hide_index=True,width=1000)
 
 
-tswap=pd.merge(swap(),mbkur()[["Tarih","DolarTL Alış"]],left_on="Valör Tarihi",right_on="Tarih",how="left")
+swap_data=swap()
+if swap_data is not None:
+    for col in swap_data.columns[1:]:
+        swap_data[col]=swap_data[col].apply(lambda x: x.replace(',', '') if x != '-' else x)
+        swap_data[col]=pd.to_numeric(swap_data[col],errors="coerce")
+
+
+tswap=pd.merge(swap_data,mbkur()[["Tarih","DolarTL Alış"]],left_on="Valör Tarihi",right_on="Tarih",how="left")
 tswap["TL Değer"]=(tswap["Toplam Stok (Alım)"]-tswap["Döviz Karşılığı TL Swap-Depo İşlemleri Stok"])*tswap["DolarTL Alış"]
 
 
