@@ -27,7 +27,7 @@ def borsa():
     for i in soup:
         ülkeler.append(i.text)
 
-    for i in range(0,92):
+    for i in range(0,91):
         tablo[i].drop(columns=["Unnamed: 0","Unnamed: 8"],inplace=True)  
         tablo[i].columns=["Endeks","Son","Yüksek","Düşük","Değişim","Değişim (%)",
                           "Saat-Tarih"]
