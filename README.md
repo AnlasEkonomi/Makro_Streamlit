@@ -12,6 +12,8 @@ EVDS kullanımı ve API almak için;
 https://www.youtube.com/watch?v=StIy_Mno2X8
 
 
+ModuleNotFoundError: No module named 'numpy.lib.arraysetops' hatası alıyorsanız numpy kütüphanesinin önceki sürümlerini kullanınız!!!
+
 Proje geliştikçe kodlar zamanla güncellenecektir. Tamamen eğitim amaçlı olup bu nedenden dolayı kodlar sizlere açıktır. 
 
 
