@@ -64,10 +64,10 @@ resim="Resimler\kredi.jpg"
 
 if secim=="Fitch":
     st.dataframe(fitch,hide_index=True,use_container_width=True)
-    st.image(resim,use_column_width=True)
+    st.image(resim,use_container_width=True)
 elif secim=="S&P":
     st.dataframe(sp,hide_index=True,use_container_width=True)
-    st.image(resim,use_column_width=True)
+    st.image(resim,use_container_width=True)
 elif secim=="Moody's":
     st.dataframe(mod,hide_index=True,use_container_width=True)
-    st.image(resim,use_column_width=True)
+    st.image(resim,use_container_width=True)

@@ -1,8 +1,6 @@
 import streamlit as st
 from datetime import datetime
 from st_social_media_links import SocialMediaIcons
-import time
-import hydralit_components as hc
 
 
 st.set_page_config(page_title="Anlaşılır Ekonomi",page_icon=':chart_with_upwards_trend:',
@@ -77,35 +75,20 @@ hide_streamlit_style = """
                 """
 st.markdown(hide_streamlit_style,unsafe_allow_html=True) 
 
-if 'snow_shown' not in st.session_state:
-    st.session_state.snow_shown=False 
+st.markdown(
+    """
+    <style>
+    .title {
+        font-size: 36px;  
+        font-family: 'Freestyle Script', Courier !important;  
+        color: red !important;  
+        text-align: center;  
+    }
+    </style>
+    <h1 class="title">Via Anlaşılır Ekonomi</h1>
+    """, 
+    unsafe_allow_html=True)
 
-if not st.session_state.snow_shown:
-    with st.snow():
-        time.sleep(5) 
-    st.markdown(
-        """
-        <style>
-        .small-text {
-            font-size: 22px;  
-            font-family: 'Freestyle Script', Courier, monospace;
-            color: red;
-            text-align: center; 
-        }
-        .loader-text {
-            font-size: 34px;
-            font-family: 'Garamond', serif;
-            }
-        </style>
-        """, unsafe_allow_html=True)
-    
-    with hc.HyLoader(f'<div class="loader-text">Hoşgeldiniz...</div> <div class="small-text">Anlaşılır Ekonomi {datetime.now().year}</div>',
-                    hc.Loaders.standard_loaders,index=5):
-        time.sleep(5) 
-    st.session_state.snow_shown=True
-
-
-st.markdown('<h1 class="title">Via Anlaşılır Ekonomi</h1>',unsafe_allow_html=True)
 tarihbugün=datetime.now().strftime('%d.%m.%Y')
 st.markdown(f'<div class="time-box">{tarihbugün}</div>',unsafe_allow_html=True)
 
@@ -201,9 +184,6 @@ hissefiyat=st.Page("hissefiyat.py",title="Hisse Senedi Fiyatları",icon="🔷",
 bisttreemap=st.Page("bisttreemap.py",title="Bist TreeMap",icon="🔷", 
             default=False)
 
-yahoofiyat=st.Page("bistyfhedef.py",title="Yahoo Hedef Fiyat",icon="🔷", 
-            default=False)
-
 cnbc=st.Page("cnbcpro.py",title="CNBC Pro Makaleler",icon="🔷", 
             default=False)
 
@@ -214,9 +194,6 @@ brent=st.Page("brent.py",title="Brent Petrol",icon="🔷",
             default=False)
 
 bist=st.Page("bist.py",title="Bist100",icon="🔷", 
-            default=False)
-
-ulusborsa=st.Page("ulusborsa.py",title="Dünya Borsaları",icon="🔷", 
             default=False)
 
 altın=st.Page("altın.py",title="Altın",icon="🔷", 
@@ -245,8 +222,7 @@ pg=st.navigation(
                          kko,banknot,dısticaret,mbbilanco,konutsatıs,konutm2,osd],
         
         "Finansal Veriler":[haber,bilancolar,hissebilgi,hissefiyat,akaryakıt,tpp,teminat,
-                            bisttreemap,yahoofiyat,cnbc,döviz,brent,bist,ulusborsa,
-                            altın,vix]
+                            bisttreemap,cnbc,döviz,brent,bist,altın,vix]
         })
 
 pg.run()
