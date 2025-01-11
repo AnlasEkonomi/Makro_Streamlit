@@ -61,7 +61,7 @@ def bilanco(hisse,para_birim):
     del tarihler[0:4]
     tumveri=[veri]
 
-    for _ in range(7):
+    for _ in range(12):
         if len(tarihler)==len(yıllar):
             del tarihler[0:4]
         else:
