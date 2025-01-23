@@ -9,7 +9,7 @@ def bisttreemap():
     r=requests.get(url).text
     tablo=pd.read_html(StringIO(r))[2]
     sektor=pd.DataFrame({"Hisse":tablo["Kod"],"Sektör":tablo["Sektör"],"Piyasa Değeri (mn $)":tablo["Piyasa Değeri (mn $)"]})
-    tablo2=pd.read_html(StringIO(r))[7]
+    tablo2=pd.read_html(StringIO(r))[6]
     
     try:
         getiri=pd.DataFrame({"Hisse":tablo2["Kod"],"Getiri (%)":tablo2["Günlük Getiri (%)"]/100})
