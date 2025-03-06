@@ -181,6 +181,9 @@ hissebilgi=st.Page("hissebilgi.py",title="Hisse Senedi Bilgileri",icon="🔷",
 hissefiyat=st.Page("hissefiyat.py",title="Hisse Senedi Fiyatları",icon="🔷", 
             default=False)
 
+hissehedeffiyat=st.Page("hissehedeffiyat.py",title="Hisse Senedi Hedef Fiyatları",icon="🔷", 
+            default=False)
+
 bisttreemap=st.Page("bisttreemap.py",title="Bist TreeMap",icon="🔷", 
             default=False)
 
@@ -221,7 +224,7 @@ pg=st.navigation(
                          rezerv,tüfe,ctüfe,üfe,ito,enfanket,issizlik,buyume,demografik,
                          kko,banknot,dısticaret,mbbilanco,konutsatıs,konutm2,osd],
         
-        "Finansal Veriler":[haber,bilancolar,hissebilgi,hissefiyat,akaryakıt,tpp,teminat,
+        "Finansal Veriler":[haber,bilancolar,hissebilgi,hissefiyat,hissehedeffiyat,akaryakıt,tpp,teminat,
                             bisttreemap,cnbc,döviz,brent,bist,altın,vix]
         })
 

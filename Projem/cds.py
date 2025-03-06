@@ -4,22 +4,24 @@ import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
 
+
 def cds():
     bugün=datetime.today().strftime("%Y-%m-%d")
     scraper=cloudscraper.CloudScraper()
     url=f'https://api.investing.com/api/financialdata/historical/1096486?start-date=2008-02-01&end-date={bugün}&time-frame=Daily&add-missing-rows=false'
     
     headers = {
-        "Accept": "*/*",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
-        "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Access-control-request-method": "GET",
-        "Origin": "https://tr.investing.com",
-        "Referer": "https://tr.investing.com/",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-        "Domain-ID": "tr"}
+    'Accept': '*/*',
+    'Accept-Encoding': 'gzip, deflate, br, zstd',
+    'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
+    'Content-Type': 'application/json',
+    'Domain-Id': 'tr',
+    'Origin': 'https://tr.investing.com',
+    'Referer': 'https://tr.investing.com/',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'}
 
     veri=scraper.get(url,headers=headers).json()["data"]
+    
     veri=[{"rowDate":item["rowDate"],"last_close":item["last_close"]} for item in veri]
     veri=pd.DataFrame(veri)
     veri.columns=["Tarih","CDS"]
